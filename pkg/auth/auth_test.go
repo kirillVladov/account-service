@@ -10,40 +10,40 @@ import (
 func TestWithUserID_GetUserIDFromCtx(t *testing.T) {
 	t.Run("stores and retrieves user id", func(t *testing.T) {
 		ctx := context.Background()
-		userID := uint64(123)
+		token := "test-token"
 
-		ctx = WithUserID(ctx, userID)
-		retrievedID, ok := GetUserIDFromCtx(ctx)
+		ctx = WithToken(ctx, token)
+		retrievedToken, ok := GetTokenFromCtx(ctx)
 
 		require.True(t, ok)
-		require.Equal(t, userID, retrievedID)
+		require.Equal(t, token, retrievedToken)
 	})
 
 	t.Run("returns false for empty context", func(t *testing.T) {
 		ctx := context.Background()
-		userID, ok := GetUserIDFromCtx(ctx)
+		token, ok := GetTokenFromCtx(ctx)
 
 		require.False(t, ok)
-		require.Equal(t, uint64(0), userID)
+		require.Equal(t, "", token)
 	})
 
 	t.Run("returns false for zero user id", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = WithUserID(ctx, 0)
-		userID, ok := GetUserIDFromCtx(ctx)
+		ctx = WithToken(ctx, "")
+		token, ok := GetTokenFromCtx(ctx)
 
 		require.False(t, ok)
-		require.Equal(t, uint64(0), userID)
+		require.Equal(t, "", token)
 	})
 
 	t.Run("overwrites existing user id", func(t *testing.T) {
 		ctx := context.Background()
-		ctx = WithUserID(ctx, 123)
-		ctx = WithUserID(ctx, 456)
+		ctx = WithToken(ctx, "test-1")
+		ctx = WithToken(ctx, "test-2")
 
-		userID, ok := GetUserIDFromCtx(ctx)
+		token, ok := GetTokenFromCtx(ctx)
 
 		require.True(t, ok)
-		require.Equal(t, uint64(456), userID)
+		require.Equal(t, "test-2", token)
 	})
 }
