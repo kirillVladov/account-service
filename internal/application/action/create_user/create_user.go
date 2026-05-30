@@ -4,30 +4,43 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/google/uuid"
+
 	"github.com/kirillVladov/account-service/internal/application/dto"
 )
 
-type TxManager interface {
-	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) (err error)
+type AccountRepository interface {
+	Create(ctx context.Context, account dto.Account) error
+}
+
+type IssuePair interface {
+	IssuePair(userID, role string) (string, string, error)
 }
 
 type CreateUserAction struct {
-	tx TxManager
+	repo         AccountRepository
+	tokenManager IssuePair
 }
 
-func New(tx TxManager) *CreateUserAction {
+func New(repo AccountRepository, tokenManager IssuePair) *CreateUserAction {
 	return &CreateUserAction{
-		tx: tx,
+		repo:         repo,
+		tokenManager: tokenManager,
 	}
 }
 
 func (a *CreateUserAction) Do(ctx context.Context, account dto.Account) error {
-	err := a.tx.WithinTransaction(ctx, func(ctx context.Context) error {
-		// fill data in all tables
-		// a.repository.
+	account.ID = uuid.New()
 
-		return nil
-	})
+	token, refreshToken, err := a.tokenManager.IssuePair(account.ID.String(), string(dto.UserRoleUser))
+	if err != nil {
+		return fmt.Errorf("issue token pair: %w", err)
+	}
+
+	account.Token = token
+	account.RefreshToken = refreshToken
+
+	err = a.repo.Create(ctx, account)
 	if err != nil {
 		return fmt.Errorf("create account: %w", err)
 	}

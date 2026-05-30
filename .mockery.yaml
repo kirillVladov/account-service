@@ -1,0 +1,9 @@
+all: true
+dir: '{{ .InterfaceDir }}/mocks'
+structname: '{{.InterfaceName}}Mock'
+filename: '{{.InterfaceName | snakecase }}_mock.go'
+pkgname: '{{ .SrcPackageName }}_mock'
+template: testify
+packages:
+  github.com/kirillVladov/account-service/internal/application/action/get_user: {}
+  github.com/kirillVladov/account-service/internal/application/action/create_user: {}

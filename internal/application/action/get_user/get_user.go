@@ -2,19 +2,32 @@ package get_user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 
 	"github.com/kirillVladov/account-service/internal/application/dto"
 )
 
-type GetUserAction struct {
+type AccountRepository interface {
+	GetByID(ctx context.Context, id uuid.UUID) (dto.Account, error)
 }
 
-func New() *GetUserAction {
-	return &GetUserAction{}
+type GetUserAction struct {
+	repo AccountRepository
+}
+
+func New(repo AccountRepository) *GetUserAction {
+	return &GetUserAction{
+		repo: repo,
+	}
 }
 
 func (a *GetUserAction) Do(ctx context.Context, id uuid.UUID) (dto.Account, error) {
-	return dto.Account{}, nil
+	account, err := a.repo.GetByID(ctx, id)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("get account: %w", err)
+	}
+
+	return account, nil
 }
