@@ -12,6 +12,7 @@ type account struct {
 	Name         string    `db:"name"`
 	Token        string    `db:"token"`
 	RefreshToken string    `db:"refresh_token"`
+	TelegramID   string    `db:"telegram_id"`
 }
 
 func convertToApplication(in account) dto.Account {
@@ -21,6 +22,7 @@ func convertToApplication(in account) dto.Account {
 		Name:         in.Name,
 		Token:        in.Token,
 		RefreshToken: in.RefreshToken,
+		TelegramID:   in.TelegramID,
 	}
 }
 
@@ -31,5 +33,6 @@ func convertToRepository(in dto.Account) account {
 		Name:         in.Name,
 		Token:        in.Token,
 		RefreshToken: in.RefreshToken,
+		TelegramID:   in.TelegramID,
 	}
 }

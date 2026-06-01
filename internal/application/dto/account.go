@@ -14,4 +14,5 @@ type Account struct {
 	Name         string
 	Token        string
 	RefreshToken string
+	TelegramID   string
 }

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "/internal/gen/grpc;pb";
+
+service AccountService {
+    rpc CreateAccount(CreateAccountRequest) returns (CreateAccountReply) {};
+    rpc GetAccount(GetAccountRequest) returns (GetAccountReply) {};
+}
+
+message Account {
+    string id = 1;         
+	string email = 2;
+	string name = 3;
+    string telegram_id = 4;
+    string token = 5;
+    string refresh_token = 6;
+    string phone = 7;
+}
+
+message CreateAccountRequest {
+    string email = 1;
+	string name = 2;
+    string telegram_id = 3;
+    string phone = 4;
+}
+
+message CreateAccountReply {
+    Account account = 1;
+}
+
+message GetAccountRequest {
+    oneof identifier {
+        string id = 1;
+        string telegram_id = 2;
+    }    
+}
+
+message GetAccountReply {
+    Account account = 1;
+}

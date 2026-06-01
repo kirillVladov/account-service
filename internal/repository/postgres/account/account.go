@@ -25,7 +25,7 @@ func New(db *pgxpool.Pool) *Repository {
 func (r *Repository) GetByID(ctx context.Context, id uuid.UUID) (dto.Account, error) {
 	db := txManager.ExecutorFromContext(ctx, r.db)
 
-	row, err := db.Query(ctx, "SELECT id, email, name, token, refresh_token FROM account WHERE id = $1", id)
+	row, err := db.Query(ctx, "SELECT id, email, name, token, refresh_token, telegram_id FROM account WHERE id = $1", id)
 	if err != nil {
 		return dto.Account{}, fmt.Errorf("query account: %w", err)
 	}
@@ -49,13 +49,15 @@ func (r *Repository) Create(ctx context.Context, account dto.Account) error {
 			email,
 			name,
 			token,
-			refresh_token
+			refresh_token,
+			telegram_id
 		) VALUES(
 			@id,
 			@email,
 			@name,
 			@token,
-			@refresh_token
+			@refresh_token,
+			@telegram_id
 		)
 	`
 
@@ -67,6 +69,7 @@ func (r *Repository) Create(ctx context.Context, account dto.Account) error {
 		"name":          rec.Name,
 		"token":         rec.Token,
 		"refresh_token": rec.RefreshToken,
+		"telegram_id":   rec.TelegramID,
 	}
 
 	row, err := db.Query(ctx, query, args)
@@ -88,4 +91,22 @@ func (r *Repository) UpdateToken(ctx context.Context, id uuid.UUID, token string
 	}
 
 	return nil
+}
+
+func (r *Repository) GetByTelegramID(ctx context.Context, telegramID string) (dto.Account, error) {
+	db := txManager.ExecutorFromContext(ctx, r.db)
+
+	row, err := db.Query(ctx, "SELECT id, email, name, token, refresh_token, telegram_id FROM account WHERE telegram_id = $1", telegramID)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("query account: %w", err)
+	}
+
+	defer row.Close()
+
+	account, err := pgx.CollectOneRow(row, pgx.RowToStructByName[account])
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("collect account row: %w", err)
+	}
+
+	return convertToApplication(account), nil
 }

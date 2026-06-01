@@ -6,4 +6,5 @@ pkgname: '{{ .SrcPackageName }}_mock'
 template: testify
 packages:
   github.com/kirillVladov/account-service/internal/application/action/get_user: {}
+  github.com/kirillVladov/account-service/internal/application/action/get_by_telegram_id: {}
   github.com/kirillVladov/account-service/internal/application/action/create_user: {}
