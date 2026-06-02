@@ -12,7 +12,7 @@ type Account struct {
 	ID           uuid.UUID
 	Email        string
 	Name         string
-	Token        string
-	RefreshToken string
+	Phone        string
+	PasswordHash string
 	TelegramID   string
 }

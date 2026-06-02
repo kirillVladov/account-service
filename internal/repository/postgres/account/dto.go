@@ -10,8 +10,8 @@ type account struct {
 	ID           uuid.UUID `db:"id"`
 	Email        string    `db:"email"`
 	Name         string    `db:"name"`
-	Token        string    `db:"token"`
-	RefreshToken string    `db:"refresh_token"`
+	PasswordHash string    `db:"password_hash"`
+	Phone        string    `db:"phone"`
 	TelegramID   string    `db:"telegram_id"`
 }
 
@@ -20,8 +20,8 @@ func convertToApplication(in account) dto.Account {
 		ID:           in.ID,
 		Email:        in.Email,
 		Name:         in.Name,
-		Token:        in.Token,
-		RefreshToken: in.RefreshToken,
+		PasswordHash: in.PasswordHash,
+		Phone:        in.Phone,
 		TelegramID:   in.TelegramID,
 	}
 }
@@ -31,8 +31,8 @@ func convertToRepository(in dto.Account) account {
 		ID:           in.ID,
 		Email:        in.Email,
 		Name:         in.Name,
-		Token:        in.Token,
-		RefreshToken: in.RefreshToken,
+		PasswordHash: in.PasswordHash,
+		Phone:        in.Phone,
 		TelegramID:   in.TelegramID,
 	}
 }

@@ -34,9 +34,7 @@ func TestCreateUserAction_Do_success(t *testing.T) {
 	repo.On("Create", ctx, mock.MatchedBy(func(acc dto.Account) bool {
 		return acc.ID != (dto.Account{}.ID) &&
 			acc.Email == input.Email &&
-			acc.Name == input.Name &&
-			acc.Token == issuedToken &&
-			acc.RefreshToken == issuedRefresh
+			acc.Name == input.Name
 	})).
 		Return(nil).
 		Once()

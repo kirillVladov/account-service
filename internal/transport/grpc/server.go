@@ -16,10 +16,10 @@ type Handlers struct {
 
 type Server struct {
 	server *grpc.Server
-	port   int
+	port   int32
 }
 
-func NewServer(port int, handlers Handlers) *Server {
+func NewServer(port int32, handlers Handlers) *Server {
 	grpcServer := grpc.NewServer()
 
 	pb.RegisterAccountServiceServer(grpcServer, handlers.Account)

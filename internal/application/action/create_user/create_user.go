@@ -29,21 +29,18 @@ func New(repo AccountRepository, tokenManager IssuePair) *CreateUserAction {
 	}
 }
 
-func (a *CreateUserAction) Do(ctx context.Context, account dto.Account) error {
+func (a *CreateUserAction) Do(ctx context.Context, account dto.Account) (dto.Account, error) {
 	account.ID = uuid.New()
 
-	token, refreshToken, err := a.tokenManager.IssuePair(account.ID.String(), string(dto.UserRoleUser))
+	// token, refreshToken, err := a.tokenManager.IssuePair(account.ID.String(), string(dto.UserRoleUser))
+	// if err != nil {
+	// 	return fmt.Errorf("issue token pair: %w", err)
+	// } later
+
+	err := a.repo.Create(ctx, account)
 	if err != nil {
-		return fmt.Errorf("issue token pair: %w", err)
+		return dto.Account{}, fmt.Errorf("create account: %w", err)
 	}
 
-	account.Token = token
-	account.RefreshToken = refreshToken
-
-	err = a.repo.Create(ctx, account)
-	if err != nil {
-		return fmt.Errorf("create account: %w", err)
-	}
-
-	return nil
+	return account, nil
 }

@@ -22,9 +22,6 @@ func TestGetUserAction_Do_success(t *testing.T) {
 		ID:    id,
 		Email: "test@example.com",
 		Name:  "Test",
-		// Token fields are expected to come from repository as-is.
-		Token:        "token",
-		RefreshToken: "refresh",
 	}
 
 	repo.On("GetByID", ctx, id).Return(expected, nil).Once()

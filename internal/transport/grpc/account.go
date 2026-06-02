@@ -28,7 +28,7 @@ func NewAccountHandlers(
 	get *getUserAction.GetUserAction,
 	getByTelegramID *getByTelegramId.Action,
 ) *AccountHandlers {
-	return &AccountHandlers{create: create, get: get}
+	return &AccountHandlers{create: create, get: get, getByTelegramID: getByTelegramID}
 }
 
 func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
@@ -40,11 +40,14 @@ func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	}
 
 	account := dto.Account{
-		Email: req.GetEmail(),
-		Name:  req.GetName(),
+		Email:      req.GetEmail(),
+		Name:       req.GetName(),
+		TelegramID: req.GetTelegramId(),
+		Phone:      req.GetPhone(),
 	}
 
-	if err := h.create.Do(ctx, account); err != nil {
+	account, err := h.create.Do(ctx, account)
+	if err != nil {
 		return nil, status.Error(codes.Internal, fmt.Sprintf("create account: %v", err))
 	}
 
@@ -73,12 +76,12 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 
 		account, err = h.get.Do(ctx, id)
 		if err != nil {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("get user: %w", err))
+			return nil, status.Error(codes.Internal, fmt.Sprintf("get user: %v", err))
 		}
 	case *pb.GetAccountRequest_TelegramId:
 		account, err = h.getByTelegramID.Get(ctx, ident.TelegramId)
 		if err != nil {
-			return nil, status.Error(codes.Internal, fmt.Sprintf("get user by tg id: %w", err))
+			return nil, status.Error(codes.Internal, fmt.Sprintf("get user by tg id: %v", err))
 		}
 	default:
 		return nil, status.Error(codes.InvalidArgument, "identifier is required")
@@ -89,10 +92,10 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 
 func pbAccountFromDTO(a dto.Account) *pb.Account {
 	return &pb.Account{
-		Id:           a.ID.String(),
-		Email:        a.Email,
-		Name:         a.Name,
-		Token:        a.Token,
-		RefreshToken: a.RefreshToken,
+		Id:         a.ID.String(),
+		Email:      a.Email,
+		Name:       a.Name,
+		TelegramId: a.TelegramID,
+		Phone:      a.Phone,
 	}
 }

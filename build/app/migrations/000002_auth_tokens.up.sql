@@ -1,4 +1,8 @@
-CREATE TYPE token_type AS ENUM('access', 'refresh');
+DO $$ BEGIN
+    CREATE TYPE token_type AS ENUM('access', 'refresh');
+EXCEPTION
+    WHEN duplicate_object THEN NULL;
+END $$;
 
 CREATE TABLE IF NOT EXISTS auth_tokens (
     id               BIGSERIAL PRIMARY KEY,         

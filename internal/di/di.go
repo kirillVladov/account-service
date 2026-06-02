@@ -3,12 +3,14 @@ package di
 import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/kelseyhightower/envconfig"
+	"go.uber.org/zap"
 
 	"github.com/kirillVladov/account-service/internal/config"
 )
 
 type DI struct {
 	config *config.Config
+	logger *zap.Logger
 
 	db *pgxpool.Pool
 }
@@ -32,4 +34,19 @@ func (di *DI) Config() *config.Config {
 	di.config = &c
 
 	return di.config
+}
+
+func (di *DI) Logger() *zap.Logger {
+	if di.logger != nil {
+		return di.logger
+	}
+
+	logger, err := zap.NewProduction()
+	if err != nil {
+		panic("init logger")
+	}
+
+	di.logger = logger
+
+	return di.logger
 }

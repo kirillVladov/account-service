@@ -7,6 +7,7 @@ package create_user_mock
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/kirillVladov/account-service/internal/application/dto"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -91,6 +92,69 @@ func (_c *AccountRepositoryMock_Create_Call) Return(err error) *AccountRepositor
 }
 
 func (_c *AccountRepositoryMock_Create_Call) RunAndReturn(run func(ctx context.Context, account dto.Account) error) *AccountRepositoryMock_Create_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
+// UpdateToken provides a mock function for the type AccountRepositoryMock
+func (_mock *AccountRepositoryMock) UpdateToken(ctx context.Context, id uuid.UUID, token string) error {
+	ret := _mock.Called(ctx, id, token)
+
+	if len(ret) == 0 {
+		panic("no return value specified for UpdateToken")
+	}
+
+	var r0 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) error); ok {
+		r0 = returnFunc(ctx, id, token)
+	} else {
+		r0 = ret.Error(0)
+	}
+	return r0
+}
+
+// AccountRepositoryMock_UpdateToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateToken'
+type AccountRepositoryMock_UpdateToken_Call struct {
+	*mock.Call
+}
+
+// UpdateToken is a helper method to define mock.On call
+//   - ctx context.Context
+//   - id uuid.UUID
+//   - token string
+func (_e *AccountRepositoryMock_Expecter) UpdateToken(ctx interface{}, id interface{}, token interface{}) *AccountRepositoryMock_UpdateToken_Call {
+	return &AccountRepositoryMock_UpdateToken_Call{Call: _e.mock.On("UpdateToken", ctx, id, token)}
+}
+
+func (_c *AccountRepositoryMock_UpdateToken_Call) Run(run func(ctx context.Context, id uuid.UUID, token string)) *AccountRepositoryMock_UpdateToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		var arg0 context.Context
+		if args[0] != nil {
+			arg0 = args[0].(context.Context)
+		}
+		var arg1 uuid.UUID
+		if args[1] != nil {
+			arg1 = args[1].(uuid.UUID)
+		}
+		var arg2 string
+		if args[2] != nil {
+			arg2 = args[2].(string)
+		}
+		run(
+			arg0,
+			arg1,
+			arg2,
+		)
+	})
+	return _c
+}
+
+func (_c *AccountRepositoryMock_UpdateToken_Call) Return(err error) *AccountRepositoryMock_UpdateToken_Call {
+	_c.Call.Return(err)
+	return _c
+}
+
+func (_c *AccountRepositoryMock_UpdateToken_Call) RunAndReturn(run func(ctx context.Context, id uuid.UUID, token string) error) *AccountRepositoryMock_UpdateToken_Call {
 	_c.Call.Return(run)
 	return _c
 }
