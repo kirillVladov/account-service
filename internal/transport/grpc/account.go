@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -12,6 +13,7 @@ import (
 	getByTelegramId "github.com/kirillVladov/account-service/internal/application/action/get_by_telegram_id"
 	getUserAction "github.com/kirillVladov/account-service/internal/application/action/get_user"
 	"github.com/kirillVladov/account-service/internal/application/dto"
+	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	pb "github.com/kirillVladov/account-service/internal/gen/grpc"
 )
 
@@ -76,11 +78,19 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 
 		account, err = h.get.Do(ctx, id)
 		if err != nil {
+			if errors.Is(err, errs.ErrAccountNotFound) {
+				return nil, status.Error(codes.NotFound, pb.GetAccountRequest_ACCOUNT_NOT_FOUND.Enum().String())
+			}
+
 			return nil, status.Error(codes.Internal, fmt.Sprintf("get user: %v", err))
 		}
 	case *pb.GetAccountRequest_TelegramId:
 		account, err = h.getByTelegramID.Get(ctx, ident.TelegramId)
 		if err != nil {
+			if errors.Is(err, errs.ErrAccountNotFound) {
+				return nil, status.Error(codes.NotFound, pb.GetAccountRequest_ACCOUNT_NOT_FOUND.Enum().String())
+			}
+
 			return nil, status.Error(codes.Internal, fmt.Sprintf("get user by tg id: %v", err))
 		}
 	default:

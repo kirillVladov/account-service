@@ -2,6 +2,7 @@ package account_repo
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/google/uuid"
@@ -9,6 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/kirillVladov/account-service/internal/application/dto"
+	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	txManager "github.com/kirillVladov/account-service/pkg/tx"
 )
 
@@ -34,6 +36,10 @@ func (r *Repository) GetByID(ctx context.Context, id uuid.UUID) (dto.Account, er
 
 	account, err := pgx.CollectOneRow(row, pgx.RowToStructByName[account])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return dto.Account{}, errs.ErrAccountNotFound
+		}
+
 		return dto.Account{}, fmt.Errorf("collect account row: %w", err)
 	}
 
@@ -107,6 +113,10 @@ func (r *Repository) GetByTelegramID(ctx context.Context, telegramID string) (dt
 
 	account, err := pgx.CollectOneRow(row, pgx.RowToStructByName[account])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return dto.Account{}, errs.ErrAccountNotFound
+		}
+
 		return dto.Account{}, fmt.Errorf("collect account row: %w", err)
 	}
 

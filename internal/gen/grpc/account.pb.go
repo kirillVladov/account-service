@@ -21,6 +21,52 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type GetAccountRequest_ErrorCode int32
+
+const (
+	GetAccountRequest_ERROR_CODE_UNSPECIFIED GetAccountRequest_ErrorCode = 0
+	GetAccountRequest_ACCOUNT_NOT_FOUND      GetAccountRequest_ErrorCode = 1
+)
+
+// Enum value maps for GetAccountRequest_ErrorCode.
+var (
+	GetAccountRequest_ErrorCode_name = map[int32]string{
+		0: "ERROR_CODE_UNSPECIFIED",
+		1: "ACCOUNT_NOT_FOUND",
+	}
+	GetAccountRequest_ErrorCode_value = map[string]int32{
+		"ERROR_CODE_UNSPECIFIED": 0,
+		"ACCOUNT_NOT_FOUND":      1,
+	}
+)
+
+func (x GetAccountRequest_ErrorCode) Enum() *GetAccountRequest_ErrorCode {
+	p := new(GetAccountRequest_ErrorCode)
+	*p = x
+	return p
+}
+
+func (x GetAccountRequest_ErrorCode) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (GetAccountRequest_ErrorCode) Descriptor() protoreflect.EnumDescriptor {
+	return file_internal_docs_proto_account_proto_enumTypes[0].Descriptor()
+}
+
+func (GetAccountRequest_ErrorCode) Type() protoreflect.EnumType {
+	return &file_internal_docs_proto_account_proto_enumTypes[0]
+}
+
+func (x GetAccountRequest_ErrorCode) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use GetAccountRequest_ErrorCode.Descriptor instead.
+func (GetAccountRequest_ErrorCode) EnumDescriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{3, 0}
+}
+
 type Account struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -372,11 +418,14 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"telegramId\x12\x14\n" +
 	"\x05phone\x18\x04 \x01(\tR\x05phone\";\n" +
 	"\x12CreateAccountReply\x12%\n" +
-	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\"V\n" +
+	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\"\x96\x01\n" +
 	"\x11GetAccountRequest\x12\x10\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x12!\n" +
 	"\vtelegram_id\x18\x02 \x01(\tH\x00R\n" +
-	"telegramIdB\f\n" +
+	"telegramId\">\n" +
+	"\tErrorCode\x12\x1a\n" +
+	"\x16ERROR_CODE_UNSPECIFIED\x10\x00\x12\x15\n" +
+	"\x11ACCOUNT_NOT_FOUND\x10\x01B\f\n" +
 	"\n" +
 	"identifier\"8\n" +
 	"\x0fGetAccountReply\x12%\n" +
@@ -398,21 +447,23 @@ func file_internal_docs_proto_account_proto_rawDescGZIP() []byte {
 	return file_internal_docs_proto_account_proto_rawDescData
 }
 
+var file_internal_docs_proto_account_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_internal_docs_proto_account_proto_goTypes = []any{
-	(*Account)(nil),              // 0: pb.Account
-	(*CreateAccountRequest)(nil), // 1: pb.CreateAccountRequest
-	(*CreateAccountReply)(nil),   // 2: pb.CreateAccountReply
-	(*GetAccountRequest)(nil),    // 3: pb.GetAccountRequest
-	(*GetAccountReply)(nil),      // 4: pb.GetAccountReply
+	(GetAccountRequest_ErrorCode)(0), // 0: pb.GetAccountRequest.ErrorCode
+	(*Account)(nil),                  // 1: pb.Account
+	(*CreateAccountRequest)(nil),     // 2: pb.CreateAccountRequest
+	(*CreateAccountReply)(nil),       // 3: pb.CreateAccountReply
+	(*GetAccountRequest)(nil),        // 4: pb.GetAccountRequest
+	(*GetAccountReply)(nil),          // 5: pb.GetAccountReply
 }
 var file_internal_docs_proto_account_proto_depIdxs = []int32{
-	0, // 0: pb.CreateAccountReply.account:type_name -> pb.Account
-	0, // 1: pb.GetAccountReply.account:type_name -> pb.Account
-	1, // 2: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
-	3, // 3: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
-	2, // 4: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
-	4, // 5: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
+	1, // 0: pb.CreateAccountReply.account:type_name -> pb.Account
+	1, // 1: pb.GetAccountReply.account:type_name -> pb.Account
+	2, // 2: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
+	4, // 3: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
+	3, // 4: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
+	5, // 5: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
 	4, // [4:6] is the sub-list for method output_type
 	2, // [2:4] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -434,13 +485,14 @@ func file_internal_docs_proto_account_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_docs_proto_account_proto_rawDesc), len(file_internal_docs_proto_account_proto_rawDesc)),
-			NumEnums:      0,
+			NumEnums:      1,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_internal_docs_proto_account_proto_goTypes,
 		DependencyIndexes: file_internal_docs_proto_account_proto_depIdxs,
+		EnumInfos:         file_internal_docs_proto_account_proto_enumTypes,
 		MessageInfos:      file_internal_docs_proto_account_proto_msgTypes,
 	}.Build()
 	File_internal_docs_proto_account_proto = out.File
