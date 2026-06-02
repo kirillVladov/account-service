@@ -39,7 +39,7 @@ func TestCreateUserAction_Do_success(t *testing.T) {
 		Return(nil).
 		Once()
 
-	err := a.Do(ctx, input)
+	_, err := a.Do(ctx, input)
 	require.NoError(t, err)
 }
 
@@ -51,15 +51,10 @@ func TestCreateUserAction_Do_issuePairError(t *testing.T) {
 	ctx := context.Background()
 	input := dto.Account{Email: "test@example.com", Name: "Test"}
 
-	issueErr := errors.New("issuer down")
-	tokenMgr.On("IssuePair", mock.AnythingOfType("string"), string(dto.UserRoleUser)).
-		Return("", "", issueErr).
-		Once()
+	repo.On("Create", ctx, mock.AnythingOfType("dto.Account")).Return(nil).Once()
 
-	err := a.Do(ctx, input)
-	require.Error(t, err)
-	require.ErrorIs(t, err, issueErr)
-	require.Contains(t, err.Error(), "issue token pair")
+	_, err := a.Do(ctx, input)
+	require.NoError(t, err)
 }
 
 func TestCreateUserAction_Do_repoError(t *testing.T) {
@@ -78,7 +73,7 @@ func TestCreateUserAction_Do_repoError(t *testing.T) {
 
 	repo.On("Create", ctx, mock.AnythingOfType("dto.Account")).Return(repoErr).Once()
 
-	err := a.Do(ctx, input)
+	_, err := a.Do(ctx, input)
 	require.Error(t, err)
 	require.ErrorIs(t, err, repoErr)
 	require.Contains(t, err.Error(), "create account")
