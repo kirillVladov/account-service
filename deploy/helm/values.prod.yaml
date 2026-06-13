@@ -1,0 +1,113 @@
+global:
+  environment: development
+
+image:
+  registry: ghcr.io
+  repository: kirillvladov/account-service
+  tag: latest
+  pullPolicy: Always
+  dockerfile: Dockerfile
+
+# Image pull secrets (for private registries)
+imagePullSecrets:
+  - name: ghcr-secret
+
+replicaCount:
+  min: 1
+  max: 1
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 256Mi
+  limits:
+    cpu: 400m
+    memory: 256Mi
+
+env:
+  DB_HOST: "secret"
+  DB_USER: "secret"
+  DB_PASSWORD: "secret"
+  DB_NAME: "secret"
+  DB_PORT: "secret"
+  JWT_PRIVATE_KEY: "secret"
+  TOKEN_TTL: "2000"
+  REFRESH_TOKEN_TTL: "315576000000"
+  AWS_ACCESS_KEY_ID: "secret"
+  AWS_SECRET_ACCESS_KEY: "secret"
+  AWS_BUCKET: "secret"
+  AWS_URL: "https://s3.timeweb.cloud"
+  AWS_REGION: "ru-1"
+  STORAGE_DB_HOST: "secret"
+  STORAGE_DB_NAME: "secret"
+  STORAGE_DB_USER: "secret"
+  STORAGE_DB_PASSWORD: "secret"
+  STORAGE_DB_PORT: "secret"
+  STORAGE_HOST_URL: 'http://nod-uploader-service.nod-uploader.svc.cluster.local:8083'
+  TRANSPORT_HOST_URL: 'http://nod-transporter-service.nod-transporter.svc.cluster.local:8084'
+  FRONT_HOST_URL: 'https://web.pulsearea.ru:3000'
+  RABBITMQ_URL: 'secret'
+  MAIN_BACKEND_HOST_URL: "https://api.pulsearea.ru"
+  METRICS_PORT: ":8001"
+
+metrics:
+  enabled: true
+  port: 8001
+  path: "/metrics"
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+  tls:
+    - hosts:
+        - api.pulsearea.ru
+      secretName: apipulseareatls
+  hosts:
+    - host: api.pulsearea.ru
+      paths:
+        - path: /api
+          pathType: Prefix
+
+hpa:
+  enabled: false
+
+networkPolicy:
+  enabled: false
+
+resourceQuota:
+  enabled: false
+
+podDisruptionBudget:
+  enabled: false
+
+security:
+  runAsNonRoot: false
+  runAsUser: 0
+  fsGroup: 0
+
+healthCheck:
+  enabled: true
+  livenessProbe:
+    path: /liveness
+    initialDelaySeconds: 60
+    periodSeconds: 30
+    timeoutSeconds: 10
+    failureThreshold: 3
+    successThreshold: 1
+  readinessProbe:
+    path: /readiness
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1

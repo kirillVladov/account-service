@@ -1,0 +1,133 @@
+# Default values for account-service
+# This is a YAML-formatted file.
+
+# Global settings
+global:
+  environment: production
+
+# Image settings
+image:
+  repository: account-service
+  tag: latest
+  pullPolicy: Always
+  # registry: your-registry.com  # Uncomment if using private registry
+
+# Image pull secrets (for private registries)
+imagePullSecrets:
+  - name: ghcr-secret
+
+# Replica settings
+replicaCount:
+  min: 2
+  max: 10
+
+# Resource settings
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 200m
+    memory: 256Mi
+
+# Service settings
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+# Ingress settings
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: api.nod.com.ru
+      paths:
+        - path: /
+          pathType: Prefix
+istio:
+  enabled: true
+  virtualService:
+    enabled: true
+    name: account-service
+    hosts:
+      - "account-service"
+    gateways: []
+    routes:
+      - destinationHost: account-service-service.account-service.svc.cluster.local
+        destinationPort: 8080
+
+# HPA settings
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# Network Policy settings
+networkPolicy:
+  enabled: true
+
+# Resource Quota settings
+resourceQuota:
+  enabled: true
+  limits:
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    pods: "10"
+    services: "5"
+
+# Pod Disruption Budget settings
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 2
+
+# Security settings
+security:
+  runAsNonRoot: true
+  runAsUser: 101
+  fsGroup: 101
+
+# Health check configuration
+healthCheck:
+  enabled: true
+  # Liveness probe configuration
+  livenessProbe:
+    path: /
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 3
+    successThreshold: 1
+  # Readiness probe configuration
+  readinessProbe:
+    path: /
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 3
+    successThreshold: 1
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity
+affinity: {}
+
+# Metrics
+metrics: {}
+
+# Pod annotations
+podAnnotations: {}
+
+# Ingress annotations
+ingressAnnotations: {} 

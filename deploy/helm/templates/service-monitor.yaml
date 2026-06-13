@@ -1,0 +1,23 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "account-service.fullname" . }}-servicemonitor
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "account-service.labels" . | nindent 4 }}
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchLabels:
+      {{- include "account-service.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: metrics
+      path: {{ .Values.metrics.path | default "/metrics" | quote }}
+      interval: "30s"
+      scheme: http
+      scrapeTimeout: "10s"
+{{- end }}
