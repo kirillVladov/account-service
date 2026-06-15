@@ -25,30 +25,9 @@ resources:
     memory: 256Mi
 
 env:
-  DB_HOST: "secret"
-  DB_USER: "secret"
-  DB_PASSWORD: "secret"
-  DB_NAME: "secret"
-  DB_PORT: "secret"
-  JWT_PRIVATE_KEY: "secret"
-  TOKEN_TTL: "2000"
-  REFRESH_TOKEN_TTL: "315576000000"
-  AWS_ACCESS_KEY_ID: "secret"
-  AWS_SECRET_ACCESS_KEY: "secret"
-  AWS_BUCKET: "secret"
-  AWS_URL: "https://s3.timeweb.cloud"
-  AWS_REGION: "ru-1"
-  STORAGE_DB_HOST: "secret"
-  STORAGE_DB_NAME: "secret"
-  STORAGE_DB_USER: "secret"
-  STORAGE_DB_PASSWORD: "secret"
-  STORAGE_DB_PORT: "secret"
-  STORAGE_HOST_URL: 'http://nod-uploader-service.nod-uploader.svc.cluster.local:8083'
-  TRANSPORT_HOST_URL: 'http://nod-transporter-service.nod-transporter.svc.cluster.local:8084'
-  FRONT_HOST_URL: 'https://web.pulsearea.ru:3000'
-  RABBITMQ_URL: 'secret'
-  MAIN_BACKEND_HOST_URL: "https://api.pulsearea.ru"
-  METRICS_PORT: ":8001"
+  POSTGRES_URL: "secret"
+  JWT_SECRET: "secret"
+  GRPC_PORT: 50052
 
 metrics:
   enabled: true

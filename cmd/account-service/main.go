@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -65,7 +66,7 @@ func main() {
 func (a *App) startDebugServer() {
 	a.logger.Info("debug server started")
 
-	server := debug_server.New("", nil)
+	server := debug_server.New(fmt.Sprintf(":%d", a.di.Config().DebugPort), a.logger)
 	_ = server.Start()
 
 	a.shutdownFn = append(a.shutdownFn, server.Shutdown)
