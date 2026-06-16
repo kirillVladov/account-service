@@ -74,7 +74,6 @@ func (a *App) startDebugServer() {
 
 func (a *App) startGRPCServer(ctx context.Context) {
 	a.logger.Info("grpc server started")
-
 	cfg := a.di.Config()
 
 	handlers := grpc.Handlers{
