@@ -40,22 +40,7 @@ service:
   targetPort: 8080
 
 ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
-  tls:
-    - hosts:
-        - api.pulsearea.ru
-      secretName: apipulseareatls
-  hosts:
-    - host: api.pulsearea.ru
-      paths:
-        - path: /api
-          pathType: Prefix
+  enabled: false
 
 hpa:
   enabled: false
