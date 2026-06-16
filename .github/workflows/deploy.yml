@@ -32,7 +32,7 @@ jobs:
       REGISTRY: ghcr.io
       IMAGE_NAME: kirillvladov/account-service
       NAMESPACE: "account-service"
-      MIGRATIONS_PATH: /app/build/app
+      MIGRATIONS_PATH: /migrations
 
     secrets:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -29,5 +29,8 @@ RUN apk --no-cache add ca-certificates
 # Копируем собранное приложение из предыдущего этапа
 COPY --from=builder /app .
 
+RUN mkdir -p /migrations
+COPY --from=builder /app/build/app/migrations /migrations
+
 # Указываем команду для запуска приложения
 CMD ["/main"]
