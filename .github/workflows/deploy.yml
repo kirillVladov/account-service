@@ -34,7 +34,7 @@ jobs:
       NAMESPACE: "account-service"
 
     secrets:
-         GH_TOKEN: ${{ secrets.GH_TOKEN }}
-         GH_USERNAME: ${{ secrets.GH_USERNAME }}
-         KUBE_CONFIG_PROD: ${{ secrets.KUBE_CONFIG_PROD }}
-         DB_URL: ${{ secrets.DB_URL }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      GH_USERNAME: ${{ secrets.GH_USERNAME }}
+      KUBE_CONFIG_PROD: ${{ secrets.KUBE_CONFIG_PROD }}
+      DB_URL: ${{ secrets.DB_URL }}
