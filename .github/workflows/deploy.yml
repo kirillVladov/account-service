@@ -15,7 +15,6 @@ on:
         options:
         - prod
 
-
 permissions:
   contents: read
   packages: write
