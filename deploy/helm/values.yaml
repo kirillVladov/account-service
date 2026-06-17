@@ -58,7 +58,7 @@ istio:
     gateways: []
     routes:
       - destinationHost: account-service-service.account-service.svc.cluster.local
-        destinationPort: 8080
+        destinationPort: 50052
 
 # HPA settings
 hpa:
