@@ -57,8 +57,8 @@ func New(addr string, logger *zap.Logger) *Server {
 	}))
 
 	e.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
-	e.GET("/healthz", s.handleLiveness)
-	e.GET("/readyz", s.handleReadiness)
+	e.GET("/liveness", s.handleLiveness)
+	e.GET("/readiness", s.handleReadiness)
 
 	// todo: refactor
 	e.Server.Addr = addr
