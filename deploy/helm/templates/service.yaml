@@ -18,11 +18,15 @@ spec:
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
       name: http
-    {{- if .Values.metrics.enabled }}
+    - port: 50052
+      targetPort: 50052
+      protocol: TCP
+      name: grpc
+{{- if .Values.metrics.enabled }}
     - port: {{ .Values.metrics.port }}
       targetPort: {{ .Values.metrics.port }}
       protocol: TCP
       name: metrics
-      {{- end }}
+{{- end }}
   selector:
     {{- include "account-service.selectorLabels" . | nindent 4 }}
