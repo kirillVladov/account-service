@@ -28,6 +28,7 @@ env:
   POSTGRES_URL: "secret"
   JWT_SECRET: "secret"
   GRPC_PORT: 50052
+  DEBUG_GRPC_PORT: 8081
 
 metrics:
   enabled: true
