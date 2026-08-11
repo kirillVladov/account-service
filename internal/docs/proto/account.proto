@@ -24,6 +24,7 @@ message CreateAccountRequest {
 	string name = 2;
     string telegram_id = 3;
     string phone = 4;
+    string password = 5;
 }
 
 message CreateAccountReply {
