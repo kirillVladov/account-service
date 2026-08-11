@@ -64,7 +64,7 @@ func (x GetAccountRequest_ErrorCode) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use GetAccountRequest_ErrorCode.Descriptor instead.
 func (GetAccountRequest_ErrorCode) EnumDescriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{5, 0}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{7, 0}
 }
 
 type Account struct {
@@ -159,17 +159,104 @@ func (x *Account) GetPhone() string {
 	return ""
 }
 
+type VerifyTokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenRequest) Reset() {
+	*x = VerifyTokenRequest{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenRequest) ProtoMessage() {}
+
+func (x *VerifyTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenRequest.ProtoReflect.Descriptor instead.
+func (*VerifyTokenRequest) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *VerifyTokenRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+type VerifyTokenReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	AccountId     string                 `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VerifyTokenReply) Reset() {
+	*x = VerifyTokenReply{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VerifyTokenReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VerifyTokenReply) ProtoMessage() {}
+
+func (x *VerifyTokenReply) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VerifyTokenReply.ProtoReflect.Descriptor instead.
+func (*VerifyTokenReply) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *VerifyTokenReply) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
 type RefreshTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	RefreshToken  string                 `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	AccountId     string                 `protobuf:"bytes,2,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *RefreshTokenRequest) Reset() {
 	*x = RefreshTokenRequest{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[1]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -181,7 +268,7 @@ func (x *RefreshTokenRequest) String() string {
 func (*RefreshTokenRequest) ProtoMessage() {}
 
 func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[1]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -194,19 +281,12 @@ func (x *RefreshTokenRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshTokenRequest.ProtoReflect.Descriptor instead.
 func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{1}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *RefreshTokenRequest) GetRefreshToken() string {
+func (x *RefreshTokenRequest) GetToken() string {
 	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
-func (x *RefreshTokenRequest) GetAccountId() string {
-	if x != nil {
-		return x.AccountId
+		return x.Token
 	}
 	return ""
 }
@@ -221,7 +301,7 @@ type RefreshTokenReply struct {
 
 func (x *RefreshTokenReply) Reset() {
 	*x = RefreshTokenReply{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[2]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -233,7 +313,7 @@ func (x *RefreshTokenReply) String() string {
 func (*RefreshTokenReply) ProtoMessage() {}
 
 func (x *RefreshTokenReply) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[2]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -246,7 +326,7 @@ func (x *RefreshTokenReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RefreshTokenReply.ProtoReflect.Descriptor instead.
 func (*RefreshTokenReply) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{2}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *RefreshTokenReply) GetToken() string {
@@ -276,7 +356,7 @@ type CreateAccountRequest struct {
 
 func (x *CreateAccountRequest) Reset() {
 	*x = CreateAccountRequest{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[3]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -288,7 +368,7 @@ func (x *CreateAccountRequest) String() string {
 func (*CreateAccountRequest) ProtoMessage() {}
 
 func (x *CreateAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[3]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -301,7 +381,7 @@ func (x *CreateAccountRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAccountRequest.ProtoReflect.Descriptor instead.
 func (*CreateAccountRequest) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{3}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateAccountRequest) GetEmail() string {
@@ -348,7 +428,7 @@ type CreateAccountReply struct {
 
 func (x *CreateAccountReply) Reset() {
 	*x = CreateAccountReply{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[4]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -360,7 +440,7 @@ func (x *CreateAccountReply) String() string {
 func (*CreateAccountReply) ProtoMessage() {}
 
 func (x *CreateAccountReply) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[4]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -373,7 +453,7 @@ func (x *CreateAccountReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateAccountReply.ProtoReflect.Descriptor instead.
 func (*CreateAccountReply) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{4}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *CreateAccountReply) GetAccount() *Account {
@@ -396,7 +476,7 @@ type GetAccountRequest struct {
 
 func (x *GetAccountRequest) Reset() {
 	*x = GetAccountRequest{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[5]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -408,7 +488,7 @@ func (x *GetAccountRequest) String() string {
 func (*GetAccountRequest) ProtoMessage() {}
 
 func (x *GetAccountRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[5]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -421,7 +501,7 @@ func (x *GetAccountRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAccountRequest.ProtoReflect.Descriptor instead.
 func (*GetAccountRequest) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{5}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetAccountRequest) GetIdentifier() isGetAccountRequest_Identifier {
@@ -474,7 +554,7 @@ type GetAccountReply struct {
 
 func (x *GetAccountReply) Reset() {
 	*x = GetAccountReply{}
-	mi := &file_internal_docs_proto_account_proto_msgTypes[6]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -486,7 +566,7 @@ func (x *GetAccountReply) String() string {
 func (*GetAccountReply) ProtoMessage() {}
 
 func (x *GetAccountReply) ProtoReflect() protoreflect.Message {
-	mi := &file_internal_docs_proto_account_proto_msgTypes[6]
+	mi := &file_internal_docs_proto_account_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -499,7 +579,7 @@ func (x *GetAccountReply) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetAccountReply.ProtoReflect.Descriptor instead.
 func (*GetAccountReply) Descriptor() ([]byte, []int) {
-	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{6}
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetAccountReply) GetAccount() *Account {
@@ -522,11 +602,14 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"telegramId\x12\x14\n" +
 	"\x05token\x18\x05 \x01(\tR\x05token\x12#\n" +
 	"\rrefresh_token\x18\x06 \x01(\tR\frefreshToken\x12\x14\n" +
-	"\x05phone\x18\a \x01(\tR\x05phone\"Y\n" +
-	"\x13RefreshTokenRequest\x12#\n" +
-	"\rrefresh_token\x18\x01 \x01(\tR\frefreshToken\x12\x1d\n" +
+	"\x05phone\x18\a \x01(\tR\x05phone\"*\n" +
+	"\x12VerifyTokenRequest\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"1\n" +
+	"\x10VerifyTokenReply\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x02 \x01(\tR\taccountId\"N\n" +
+	"account_id\x18\x01 \x01(\tR\taccountId\"+\n" +
+	"\x13RefreshTokenRequest\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"N\n" +
 	"\x11RefreshTokenReply\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"\x93\x01\n" +
@@ -549,12 +632,13 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\n" +
 	"identifier\"8\n" +
 	"\x0fGetAccountReply\x12%\n" +
-	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount2\xd3\x01\n" +
+	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount2\x92\x02\n" +
 	"\x0eAccountService\x12C\n" +
 	"\rCreateAccount\x12\x18.pb.CreateAccountRequest\x1a\x16.pb.CreateAccountReply\"\x00\x12:\n" +
 	"\n" +
 	"GetAccount\x12\x15.pb.GetAccountRequest\x1a\x13.pb.GetAccountReply\"\x00\x12@\n" +
-	"\fRefreshToken\x12\x17.pb.RefreshTokenRequest\x1a\x15.pb.RefreshTokenReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
+	"\fRefreshToken\x12\x17.pb.RefreshTokenRequest\x1a\x15.pb.RefreshTokenReply\"\x00\x12=\n" +
+	"\vVerifyToken\x12\x16.pb.VerifyTokenRequest\x1a\x14.pb.VerifyTokenReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
 
 var (
 	file_internal_docs_proto_account_proto_rawDescOnce sync.Once
@@ -569,28 +653,32 @@ func file_internal_docs_proto_account_proto_rawDescGZIP() []byte {
 }
 
 var file_internal_docs_proto_account_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_internal_docs_proto_account_proto_goTypes = []any{
 	(GetAccountRequest_ErrorCode)(0), // 0: pb.GetAccountRequest.ErrorCode
 	(*Account)(nil),                  // 1: pb.Account
-	(*RefreshTokenRequest)(nil),      // 2: pb.RefreshTokenRequest
-	(*RefreshTokenReply)(nil),        // 3: pb.RefreshTokenReply
-	(*CreateAccountRequest)(nil),     // 4: pb.CreateAccountRequest
-	(*CreateAccountReply)(nil),       // 5: pb.CreateAccountReply
-	(*GetAccountRequest)(nil),        // 6: pb.GetAccountRequest
-	(*GetAccountReply)(nil),          // 7: pb.GetAccountReply
+	(*VerifyTokenRequest)(nil),       // 2: pb.VerifyTokenRequest
+	(*VerifyTokenReply)(nil),         // 3: pb.VerifyTokenReply
+	(*RefreshTokenRequest)(nil),      // 4: pb.RefreshTokenRequest
+	(*RefreshTokenReply)(nil),        // 5: pb.RefreshTokenReply
+	(*CreateAccountRequest)(nil),     // 6: pb.CreateAccountRequest
+	(*CreateAccountReply)(nil),       // 7: pb.CreateAccountReply
+	(*GetAccountRequest)(nil),        // 8: pb.GetAccountRequest
+	(*GetAccountReply)(nil),          // 9: pb.GetAccountReply
 }
 var file_internal_docs_proto_account_proto_depIdxs = []int32{
 	1, // 0: pb.CreateAccountReply.account:type_name -> pb.Account
 	1, // 1: pb.GetAccountReply.account:type_name -> pb.Account
-	4, // 2: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
-	6, // 3: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
-	2, // 4: pb.AccountService.RefreshToken:input_type -> pb.RefreshTokenRequest
-	5, // 5: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
-	7, // 6: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
-	3, // 7: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
-	5, // [5:8] is the sub-list for method output_type
-	2, // [2:5] is the sub-list for method input_type
+	6, // 2: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
+	8, // 3: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
+	4, // 4: pb.AccountService.RefreshToken:input_type -> pb.RefreshTokenRequest
+	2, // 5: pb.AccountService.VerifyToken:input_type -> pb.VerifyTokenRequest
+	7, // 6: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
+	9, // 7: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
+	5, // 8: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
+	3, // 9: pb.AccountService.VerifyToken:output_type -> pb.VerifyTokenReply
+	6, // [6:10] is the sub-list for method output_type
+	2, // [2:6] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
 	2, // [2:2] is the sub-list for extension extendee
 	0, // [0:2] is the sub-list for field type_name
@@ -601,7 +689,7 @@ func file_internal_docs_proto_account_proto_init() {
 	if File_internal_docs_proto_account_proto != nil {
 		return
 	}
-	file_internal_docs_proto_account_proto_msgTypes[5].OneofWrappers = []any{
+	file_internal_docs_proto_account_proto_msgTypes[7].OneofWrappers = []any{
 		(*GetAccountRequest_Id)(nil),
 		(*GetAccountRequest_TelegramId)(nil),
 	}
@@ -611,7 +699,7 @@ func file_internal_docs_proto_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_docs_proto_account_proto_rawDesc), len(file_internal_docs_proto_account_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -15,22 +15,39 @@ import (
 	"github.com/kirillVladov/account-service/internal/application/dto"
 	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	pb "github.com/kirillVladov/account-service/internal/gen/grpc"
+	"github.com/kirillVladov/account-service/pkg/token_manager"
 )
+
+type TokenManager interface {
+	ValidateAccess(raw string) (*token_manager.Claims, error)
+}
+
+type RefreshTokenAction interface {
+	Refresh(ctx context.Context, token string) (string, string, error)
+}
 
 type AccountHandlers struct {
 	pb.UnimplementedAccountServiceServer
 
-	create          *createUserAction.CreateUserAction
-	get             *getUserAction.GetUserAction
-	getByTelegramID *getByTelegramId.Action
+	create             *createUserAction.CreateUserAction
+	get                *getUserAction.GetUserAction
+	getByTelegramID    *getByTelegramId.Action
+	tokenManager       TokenManager
+	refreshTokenAction RefreshTokenAction
 }
 
 func NewAccountHandlers(
 	create *createUserAction.CreateUserAction,
 	get *getUserAction.GetUserAction,
 	getByTelegramID *getByTelegramId.Action,
+	tokenManager TokenManager,
 ) *AccountHandlers {
-	return &AccountHandlers{create: create, get: get, getByTelegramID: getByTelegramID}
+	return &AccountHandlers{
+		create:          create,
+		get:             get,
+		getByTelegramID: getByTelegramID,
+		tokenManager:    tokenManager,
+	}
 }
 
 func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
@@ -54,6 +71,27 @@ func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccou
 	}
 
 	return &pb.CreateAccountReply{Account: pbAccountFromDTO(account)}, nil
+}
+
+func (h *AccountHandlers) VerifyToken(ctx context.Context, req *pb.VerifyTokenRequest) (*pb.VerifyTokenReply, error) {
+	claims, err := h.tokenManager.ValidateAccess(req.GetToken())
+	if err != nil {
+		return nil, status.Error(codes.Unauthenticated, "not valid token")
+	}
+
+	return &pb.VerifyTokenReply{AccountId: claims.UserID}, nil
+}
+
+func (h *AccountHandlers) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenReply, error) {
+	token, refreshToken, err := h.refreshTokenAction.Refresh(ctx, req.GetToken())
+	if err != nil {
+		return nil, status.Error(codes.Internal, "not valid token")
+	}
+
+	return &pb.RefreshTokenReply{
+		Token:        token,
+		RefreshToken: refreshToken,
+	}, nil
 }
 
 func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb.GetAccountReply, error) {

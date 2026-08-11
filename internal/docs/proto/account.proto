@@ -8,6 +8,7 @@ service AccountService {
     rpc CreateAccount(CreateAccountRequest) returns (CreateAccountReply) {};
     rpc GetAccount(GetAccountRequest) returns (GetAccountReply) {};
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply) {};
+    rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenReply) {};
 }
 
 message Account {
@@ -20,9 +21,16 @@ message Account {
     string phone = 7;
 }
 
+message VerifyTokenRequest {
+    string token = 1;
+}
+
+message VerifyTokenReply {
+    string account_id = 1;
+}
+
 message RefreshTokenRequest {
-    string refresh_token = 1;
-    string account_id = 2;
+    string token = 1;
 }
 
 message RefreshTokenReply {
