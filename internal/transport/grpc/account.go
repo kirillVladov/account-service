@@ -9,7 +9,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	getUserAction "github.com/kirillVladov/account-service/internal/application/action/get_user"
 	"github.com/kirillVladov/account-service/internal/application/dto"
 	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	pb "github.com/kirillVladov/account-service/internal/gen/grpc"
@@ -28,18 +27,22 @@ type CreateAccountAction interface {
 	Do(ctx context.Context, account dto.AccountCreateRequest) (dto.Account, string, string, error)
 }
 
+type GetUserAction interface {
+	Do(ctx context.Context, id uuid.UUID) (dto.Account, error)
+}
+
 type AccountHandlers struct {
 	pb.UnimplementedAccountServiceServer
 
 	create             CreateAccountAction
-	get                *getUserAction.GetUserAction
+	get                GetUserAction
 	tokenManager       TokenManager
 	refreshTokenAction RefreshTokenAction
 }
 
 func NewAccountHandlers(
 	create CreateAccountAction,
-	get *getUserAction.GetUserAction,
+	get GetUserAction,
 	tokenManager TokenManager,
 	refreshTokenAction RefreshTokenAction,
 ) *AccountHandlers {
@@ -52,10 +55,6 @@ func NewAccountHandlers(
 }
 
 func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "request is nil")
-	}
-
 	if req.GetEmail() == "" {
 		return nil, status.Error(codes.InvalidArgument, "email is empty")
 	}
@@ -99,10 +98,6 @@ func (h *AccountHandlers) RefreshToken(ctx context.Context, req *pb.RefreshToken
 }
 
 func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequest) (*pb.GetAccountReply, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "request is nil")
-	}
-
 	id, err := uuid.Parse(req.GetId())
 	if err != nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid id")
