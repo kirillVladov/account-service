@@ -22,10 +22,12 @@ const (
 type Account struct {
 	ID           uuid.UUID
 	Email        string
-	Name         string
-	Phone        string
 	PasswordHash string
-	TelegramID   string
+}
+
+type AccountCreateRequest struct {
+	Email    string
+	Password string
 }
 
 type AccountToken struct {

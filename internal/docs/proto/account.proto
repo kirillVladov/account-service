@@ -14,11 +14,6 @@ service AccountService {
 message Account {
     string id = 1;         
 	string email = 2;
-	string name = 3;
-    string telegram_id = 4;
-    string token = 5;
-    string refresh_token = 6;
-    string phone = 7;
 }
 
 message VerifyTokenRequest {
@@ -31,6 +26,7 @@ message VerifyTokenReply {
 
 message RefreshTokenRequest {
     string token = 1;
+    string refresh_token = 2;
 }
 
 message RefreshTokenReply {
@@ -40,14 +36,13 @@ message RefreshTokenReply {
 
 message CreateAccountRequest {
     string email = 1;
-	string name = 2;
-    string telegram_id = 3;
-    string phone = 4;
-    string password = 5;
+    string password = 2;
 }
 
 message CreateAccountReply {
     Account account = 1;
+    string token = 2;
+    string refresh_token = 3;
 }
 
 message GetAccountRequest {

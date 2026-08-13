@@ -67,7 +67,7 @@ func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID) (dt
 			expires_at,
 			revoked
 		FROM auth_tokens 
-		WHERE user_id = @user_id AND expires_at >= NOW() AND revoke = FALSE`
+		WHERE user_id = @user_id AND expires_at >= NOW() AND revoked = FALSE`
 
 	args := pgx.NamedArgs{
 		"user_id": userID,
@@ -92,7 +92,7 @@ func (r *Repository) DeactivateByUser(ctx context.Context, userID uuid.UUID) err
 	const query = `
 		UPDATE auth_tokens 
 			SET
-				revoked = FALSE
+				revoked = TRUE
 		WHERE user_id = @user_id
 	`
 

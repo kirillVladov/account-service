@@ -71,11 +71,6 @@ type Account struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	TelegramId    string                 `protobuf:"bytes,4,opt,name=telegram_id,json=telegramId,proto3" json:"telegram_id,omitempty"`
-	Token         string                 `protobuf:"bytes,5,opt,name=token,proto3" json:"token,omitempty"`
-	RefreshToken  string                 `protobuf:"bytes,6,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-	Phone         string                 `protobuf:"bytes,7,opt,name=phone,proto3" json:"phone,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -120,41 +115,6 @@ func (x *Account) GetId() string {
 func (x *Account) GetEmail() string {
 	if x != nil {
 		return x.Email
-	}
-	return ""
-}
-
-func (x *Account) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *Account) GetTelegramId() string {
-	if x != nil {
-		return x.TelegramId
-	}
-	return ""
-}
-
-func (x *Account) GetToken() string {
-	if x != nil {
-		return x.Token
-	}
-	return ""
-}
-
-func (x *Account) GetRefreshToken() string {
-	if x != nil {
-		return x.RefreshToken
-	}
-	return ""
-}
-
-func (x *Account) GetPhone() string {
-	if x != nil {
-		return x.Phone
 	}
 	return ""
 }
@@ -250,6 +210,7 @@ func (x *VerifyTokenReply) GetAccountId() string {
 type RefreshTokenRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -287,6 +248,13 @@ func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
 func (x *RefreshTokenRequest) GetToken() string {
 	if x != nil {
 		return x.Token
+	}
+	return ""
+}
+
+func (x *RefreshTokenRequest) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
 	}
 	return ""
 }
@@ -346,10 +314,7 @@ func (x *RefreshTokenReply) GetRefreshToken() string {
 type CreateAccountRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	TelegramId    string                 `protobuf:"bytes,3,opt,name=telegram_id,json=telegramId,proto3" json:"telegram_id,omitempty"`
-	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
-	Password      string                 `protobuf:"bytes,5,opt,name=password,proto3" json:"password,omitempty"`
+	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -391,27 +356,6 @@ func (x *CreateAccountRequest) GetEmail() string {
 	return ""
 }
 
-func (x *CreateAccountRequest) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *CreateAccountRequest) GetTelegramId() string {
-	if x != nil {
-		return x.TelegramId
-	}
-	return ""
-}
-
-func (x *CreateAccountRequest) GetPhone() string {
-	if x != nil {
-		return x.Phone
-	}
-	return ""
-}
-
 func (x *CreateAccountRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
@@ -422,6 +366,8 @@ func (x *CreateAccountRequest) GetPassword() string {
 type CreateAccountReply struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Account       *Account               `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Token         string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,3,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -461,6 +407,20 @@ func (x *CreateAccountReply) GetAccount() *Account {
 		return x.Account
 	}
 	return nil
+}
+
+func (x *CreateAccountReply) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *CreateAccountReply) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
 }
 
 type GetAccountRequest struct {
@@ -593,35 +553,28 @@ var File_internal_docs_proto_account_proto protoreflect.FileDescriptor
 
 const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\n" +
-	"!internal/docs/proto/account.proto\x12\x02pb\"\xb5\x01\n" +
+	"!internal/docs/proto/account.proto\x12\x02pb\"/\n" +
 	"\aAccount\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1f\n" +
-	"\vtelegram_id\x18\x04 \x01(\tR\n" +
-	"telegramId\x12\x14\n" +
-	"\x05token\x18\x05 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x06 \x01(\tR\frefreshToken\x12\x14\n" +
-	"\x05phone\x18\a \x01(\tR\x05phone\"*\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\"*\n" +
 	"\x12VerifyTokenRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"1\n" +
 	"\x10VerifyTokenReply\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\"+\n" +
+	"account_id\x18\x01 \x01(\tR\taccountId\"P\n" +
 	"\x13RefreshTokenRequest\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"N\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"N\n" +
 	"\x11RefreshTokenReply\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"\x93\x01\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"H\n" +
 	"\x14CreateAccountRequest\x12\x14\n" +
-	"\x05email\x18\x01 \x01(\tR\x05email\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
-	"\vtelegram_id\x18\x03 \x01(\tR\n" +
-	"telegramId\x12\x14\n" +
-	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\x1a\n" +
-	"\bpassword\x18\x05 \x01(\tR\bpassword\";\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\"v\n" +
 	"\x12CreateAccountReply\x12%\n" +
-	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\"\x96\x01\n" +
+	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\x12\x14\n" +
+	"\x05token\x18\x02 \x01(\tR\x05token\x12#\n" +
+	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\"\x96\x01\n" +
 	"\x11GetAccountRequest\x12\x10\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x12!\n" +
 	"\vtelegram_id\x18\x02 \x01(\tH\x00R\n" +

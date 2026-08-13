@@ -12,7 +12,7 @@ import (
 )
 
 type AccountRepository interface {
-	Create(ctx context.Context, account dto.Account) error
+	Create(ctx context.Context, in dto.AccountCreateRequest) (dto.Account, error)
 }
 
 type TokensRepo interface {
@@ -51,31 +51,40 @@ func New(
 	}
 }
 
-func (a *CreateUserAction) Do(ctx context.Context, account dto.Account) (dto.Account, string, error) {
-	account.ID = uuid.New()
+func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequest) (dto.Account, string, string, error) {
+	var (
+		outToken        string
+		outRefreshToken string
+		outAccount      dto.Account
+	)
 
-	token, refreshToken, err := a.tokenManager.IssuePair(account.ID.String(), string(dto.UserRoleUser))
-	if err != nil {
-		return dto.Account{}, "", fmt.Errorf("issue token pair: %w", err)
-	}
-
-	err = a.txManager.WithinTransaction(ctx, func(ctx context.Context) error {
-		if err = a.repo.Create(ctx, account); err != nil {
+	err := a.txManager.WithinTransaction(ctx, func(ctx context.Context) error {
+		created, err := a.repo.Create(ctx, account)
+		if err != nil {
 			return fmt.Errorf("create account: %w", err)
+		}
+
+		token, refreshToken, err := a.tokenManager.IssuePair(created.ID.String(), string(dto.UserRoleUser))
+		if err != nil {
+			return fmt.Errorf("issue token pair: %w", err)
 		}
 
 		expires := time.Now().Add(a.tokenDuration)
 		tokenHash := token_manager.HashToken(refreshToken)
 
-		if err = a.tokensRepo.CreateRefreshToken(ctx, account.ID, tokenHash, expires); err != nil {
+		if err = a.tokensRepo.CreateRefreshToken(ctx, created.ID, tokenHash, expires); err != nil {
 			return fmt.Errorf("create token: %w", err)
 		}
+
+		outToken = token
+		outRefreshToken = refreshToken
+		outAccount = created
 
 		return nil
 	})
 	if err != nil {
-		return dto.Account{}, "", fmt.Errorf("tx error: %w", err)
+		return dto.Account{}, "", "", fmt.Errorf("tx error: %w", err)
 	}
 
-	return account, token, nil
+	return outAccount, outToken, outRefreshToken, nil
 }

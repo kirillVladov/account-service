@@ -6,6 +6,7 @@ func (di *DI) AccountHandler() *grpc.AccountHandlers {
 	return grpc.NewAccountHandlers(
 		di.CreateUserAction(),
 		di.GetUserAction(),
-		di.GetByTelegramIDAction(),
+		di.TokenManager(),
+		di.RefreshTokenAction(),
 	)
 }
