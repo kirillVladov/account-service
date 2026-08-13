@@ -44,23 +44,22 @@ func New(cfg Config) *Manager {
 }
 
 func (m *Manager) ValidateAccess(raw string) (*Claims, error) {
-	t, err := jwt.ParseWithClaims(raw, &Claims{}, func(t *jwt.Token) (any, error) {
+	claims := &Claims{}
+	t, err := jwt.ParseWithClaims(raw, claims, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("token: unexpected signing method: %v", t.Header["alg"])
 		}
-
 		return m.cfg.Secret, nil
 	})
+
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
-			return nil, ErrTokenExpired
+			return claims, ErrTokenExpired // claims заполнены, incl. UserID
 		}
-
 		return nil, ErrTokenInvalid
 	}
 
-	claims, ok := t.Claims.(*Claims)
-	if !ok || !t.Valid {
+	if !t.Valid {
 		return nil, ErrTokenInvalid
 	}
 
