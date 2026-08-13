@@ -1,6 +1,17 @@
 package dto
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
+
+type TokenType string
+
+const (
+	TokenTypeRefresh TokenType = "refresh"
+	TokenTypeAccess  TokenType = "access"
+)
 
 type UserRole string
 
@@ -11,8 +22,19 @@ const (
 type Account struct {
 	ID           uuid.UUID
 	Email        string
-	Name         string
-	Phone        string
 	PasswordHash string
-	TelegramID   string
+}
+
+type AccountCreateRequest struct {
+	Email    string
+	Password string
+}
+
+type AccountToken struct {
+	ID        int64
+	UserID    uuid.UUID
+	TokenType TokenType
+	TokenHash string
+	ExpiresAt time.Time
+	Revoked   bool
 }
