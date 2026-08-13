@@ -6,7 +6,7 @@ type AuthToken struct {
 	RefreshTokenTTL        time.Duration `envconfig:"REFRESH_TOKEN_TTL" required:"true"`
 	TokenTTL               time.Duration `envconfig:"TOKEN_TTL" required:"true"`
 	RefreshTokenBytesCount int64         `envconfig:"REFRESH_TOKEN_BYTES_COUNT" required:"true"`
-	TokenSecret            []byte        `envconfig:"TOKEN_SECRET" required:"true"`
+	TokenSecret            string        `envconfig:"TOKEN_SECRET" required:"true"`
 }
 
 type Config struct {
