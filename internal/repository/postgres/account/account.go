@@ -24,10 +24,10 @@ func New(db *pgxpool.Pool) *Repository {
 	}
 }
 
-func (r *Repository) GetByID(ctx context.Context, id uuid.UUID) (dto.Account, error) {
+func (r *Repository) GetByID(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error) {
 	db := txManager.ExecutorFromContext(ctx, r.db)
 
-	row, err := db.Query(ctx, "SELECT id, email, password_hash FROM account WHERE id = $1", id)
+	row, err := db.Query(ctx, "SELECT id, email, password_hash, organization_id FROM account WHERE id = $1 AND organization_id = $2", id, organizationID)
 	if err != nil {
 		return dto.Account{}, fmt.Errorf("query account: %w", err)
 	}
@@ -53,23 +53,27 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 		INSERT INTO account(
 			email,
 			password_hash,
+			organization_id,
 			created_at,
 			updated_at
 		) VALUES(
 			@email,
 			@password_hash,
+			@organization_id,
 			now(),
 			now()
 		)
 		RETURNING
 			id,
 			email,
-			password_hash
+			password_hash,
+			organization_id
 	`
 
 	args := pgx.NamedArgs{
-		"email":         in.Email,
-		"password_hash": in.Password,
+		"email":           in.Email,
+		"password_hash":   in.Password,
+		"organization_id": in.OrganizationID,
 	}
 
 	rows, err := db.Query(ctx, query, args)

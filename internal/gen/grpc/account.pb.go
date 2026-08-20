@@ -68,11 +68,12 @@ func (GetAccountRequest_ErrorCode) EnumDescriptor() ([]byte, []int) {
 }
 
 type Account struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Email          string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	OrganizationId int64                  `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *Account) Reset() {
@@ -117,6 +118,13 @@ func (x *Account) GetEmail() string {
 		return x.Email
 	}
 	return ""
+}
+
+func (x *Account) GetOrganizationId() int64 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
 }
 
 type VerifyTokenRequest struct {
@@ -164,10 +172,11 @@ func (x *VerifyTokenRequest) GetToken() string {
 }
 
 type VerifyTokenReply struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	AccountId     string                 `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	AccountId      string                 `protobuf:"bytes,1,opt,name=account_id,json=accountId,proto3" json:"account_id,omitempty"`
+	OrganizationId int64                  `protobuf:"varint,2,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *VerifyTokenReply) Reset() {
@@ -205,6 +214,13 @@ func (x *VerifyTokenReply) GetAccountId() string {
 		return x.AccountId
 	}
 	return ""
+}
+
+func (x *VerifyTokenReply) GetOrganizationId() int64 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
 }
 
 type RefreshTokenRequest struct {
@@ -312,11 +328,12 @@ func (x *RefreshTokenReply) GetRefreshToken() string {
 }
 
 type CreateAccountRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Email          string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password       string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	OrganizationId int64                  `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *CreateAccountRequest) Reset() {
@@ -361,6 +378,13 @@ func (x *CreateAccountRequest) GetPassword() string {
 		return x.Password
 	}
 	return ""
+}
+
+func (x *CreateAccountRequest) GetOrganizationId() int64 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
 }
 
 type CreateAccountReply struct {
@@ -429,9 +453,10 @@ type GetAccountRequest struct {
 	//
 	//	*GetAccountRequest_Id
 	//	*GetAccountRequest_TelegramId
-	Identifier    isGetAccountRequest_Identifier `protobuf_oneof:"identifier"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	Identifier     isGetAccountRequest_Identifier `protobuf_oneof:"identifier"`
+	OrganizationId int64                          `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
 }
 
 func (x *GetAccountRequest) Reset() {
@@ -487,6 +512,13 @@ func (x *GetAccountRequest) GetTelegramId() string {
 		}
 	}
 	return ""
+}
+
+func (x *GetAccountRequest) GetOrganizationId() int64 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
 }
 
 type isGetAccountRequest_Identifier interface {
@@ -553,32 +585,36 @@ var File_internal_docs_proto_account_proto protoreflect.FileDescriptor
 
 const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\n" +
-	"!internal/docs/proto/account.proto\x12\x02pb\"/\n" +
+	"!internal/docs/proto/account.proto\x12\x02pb\"X\n" +
 	"\aAccount\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
-	"\x05email\x18\x02 \x01(\tR\x05email\"*\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12'\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\"*\n" +
 	"\x12VerifyTokenRequest\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05token\"1\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\"Z\n" +
 	"\x10VerifyTokenReply\x12\x1d\n" +
 	"\n" +
-	"account_id\x18\x01 \x01(\tR\taccountId\"P\n" +
+	"account_id\x18\x01 \x01(\tR\taccountId\x12'\n" +
+	"\x0forganization_id\x18\x02 \x01(\x03R\x0eorganizationId\"P\n" +
 	"\x13RefreshTokenRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"N\n" +
 	"\x11RefreshTokenReply\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"H\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"q\n" +
 	"\x14CreateAccountRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\"v\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12'\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\"v\n" +
 	"\x12CreateAccountReply\x12%\n" +
 	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\x12\x14\n" +
 	"\x05token\x18\x02 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\"\x96\x01\n" +
+	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\"\xbf\x01\n" +
 	"\x11GetAccountRequest\x12\x10\n" +
 	"\x02id\x18\x01 \x01(\tH\x00R\x02id\x12!\n" +
 	"\vtelegram_id\x18\x02 \x01(\tH\x00R\n" +
-	"telegramId\">\n" +
+	"telegramId\x12'\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\">\n" +
 	"\tErrorCode\x12\x1a\n" +
 	"\x16ERROR_CODE_UNSPECIFIED\x10\x00\x12\x15\n" +
 	"\x11ACCOUNT_NOT_FOUND\x10\x01B\f\n" +

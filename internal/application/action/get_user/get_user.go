@@ -10,7 +10,7 @@ import (
 )
 
 type AccountRepository interface {
-	GetByID(ctx context.Context, id uuid.UUID) (dto.Account, error)
+	GetByID(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error)
 }
 
 type GetUserAction struct {
@@ -23,8 +23,8 @@ func New(repo AccountRepository) *GetUserAction {
 	}
 }
 
-func (a *GetUserAction) Do(ctx context.Context, id uuid.UUID) (dto.Account, error) {
-	account, err := a.repo.GetByID(ctx, id)
+func (a *GetUserAction) Do(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error) {
+	account, err := a.repo.GetByID(ctx, id, organizationID)
 	if err != nil {
 		return dto.Account{}, fmt.Errorf("get account: %w", err)
 	}

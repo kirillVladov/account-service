@@ -15,14 +15,14 @@ import (
 
 type TokenManager interface {
 	ValidateAccess(raw string) (*token_manager.Claims, error)
-	IssuePair(userID, role string) (string, string, error)
-	IssueAccess(userID string) (string, error)
+	IssuePair(userID, role string, organizationID int64) (string, string, error)
+	IssueAccess(userID string, organizationID int64) (string, error)
 }
 
 type AccountTokensRepository interface {
-	DeactivateByUser(ctx context.Context, userID uuid.UUID) error
-	CreateRefreshToken(ctx context.Context, userID uuid.UUID, tokenHash string, expiresAt time.Time) error
-	GetTokenByUserID(ctx context.Context, userID uuid.UUID) (dto.AccountToken, error)
+	DeactivateByUser(ctx context.Context, userID uuid.UUID, organizationID int64) error
+	CreateRefreshToken(ctx context.Context, userID uuid.UUID, organizationID int64, tokenHash string, expiresAt time.Time) error
+	GetTokenByUserID(ctx context.Context, userID uuid.UUID, organizationID int64) (dto.AccountToken, error)
 }
 
 type RefreshTokenAction struct {
@@ -52,7 +52,7 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 		return "", "", fmt.Errorf("parse user id: %w", err)
 	}
 
-	accountCreds, err := a.accountTokenRepository.GetTokenByUserID(ctx, userId)
+	accountCreds, err := a.accountTokenRepository.GetTokenByUserID(ctx, userId, claims.OrganizationID)
 	if err != nil {
 		return "", "", fmt.Errorf("get account creds: %w", err)
 	}
@@ -64,7 +64,7 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 	}
 
 	if accountCreds.ExpiresAt.After(time.Now()) {
-		token, err := a.tokenManager.IssueAccess(claims.UserID)
+		token, err := a.tokenManager.IssueAccess(claims.UserID, claims.OrganizationID)
 		if err != nil {
 			return "", "", fmt.Errorf("generate access token: %w", err)
 		}
@@ -72,17 +72,17 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 		return token, oldRefreshToken, nil
 	}
 
-	token, refreshToken, err := a.tokenManager.IssuePair(claims.UserID, string(dto.UserRoleUser))
+	token, refreshToken, err := a.tokenManager.IssuePair(claims.UserID, string(dto.UserRoleUser), claims.OrganizationID)
 	if err != nil {
 		return "", "", fmt.Errorf("generate pairs: %w", err)
 	}
 
-	err = a.accountTokenRepository.DeactivateByUser(ctx, userId)
+	err = a.accountTokenRepository.DeactivateByUser(ctx, userId, claims.OrganizationID)
 	if err != nil {
 		return "", "", fmt.Errorf("deactivate user: %w", err)
 	}
 
-	err = a.accountTokenRepository.CreateRefreshToken(ctx, userId, refreshToken, time.Now())
+	err = a.accountTokenRepository.CreateRefreshToken(ctx, userId, claims.OrganizationID, refreshToken, time.Now())
 	if err != nil {
 		return "", "", fmt.Errorf("deactivate user: %w", err)
 	}

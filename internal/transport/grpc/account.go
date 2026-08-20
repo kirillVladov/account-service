@@ -28,7 +28,7 @@ type CreateAccountAction interface {
 }
 
 type GetUserAction interface {
-	Do(ctx context.Context, id uuid.UUID) (dto.Account, error)
+	Do(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error)
 }
 
 type AccountHandlers struct {
@@ -63,9 +63,14 @@ func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		return nil, status.Error(codes.InvalidArgument, "password is empty")
 	}
 
+	if req.GetOrganizationId() <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "organization_id is invalid")
+	}
+
 	request := dto.AccountCreateRequest{
-		Email:    req.GetEmail(),
-		Password: req.GetPassword(),
+		Email:          req.GetEmail(),
+		Password:       req.GetPassword(),
+		OrganizationID: req.GetOrganizationId(),
 	}
 
 	account, token, refreshToken, err := h.create.Do(ctx, request)
@@ -82,7 +87,7 @@ func (h *AccountHandlers) VerifyToken(ctx context.Context, req *pb.VerifyTokenRe
 		return nil, status.Error(codes.Unauthenticated, "not valid token")
 	}
 
-	return &pb.VerifyTokenReply{AccountId: claims.UserID}, nil
+	return &pb.VerifyTokenReply{AccountId: claims.UserID, OrganizationId: claims.OrganizationID}, nil
 }
 
 func (h *AccountHandlers) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenReply, error) {
@@ -103,7 +108,11 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 		return nil, status.Error(codes.InvalidArgument, "invalid id")
 	}
 
-	account, err := h.get.Do(ctx, id)
+	if req.GetOrganizationId() <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "organization_id is invalid")
+	}
+
+	account, err := h.get.Do(ctx, id, req.GetOrganizationId())
 	if err != nil {
 		if errors.Is(err, errs.ErrAccountNotFound) {
 			return nil, status.Error(codes.NotFound, pb.GetAccountRequest_ACCOUNT_NOT_FOUND.Enum().String())
@@ -117,7 +126,8 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 
 func pbAccountFromDTO(a dto.Account) *pb.Account {
 	return &pb.Account{
-		Id:    a.ID.String(),
-		Email: a.Email,
+		Id:             a.ID.String(),
+		Email:          a.Email,
+		OrganizationId: a.OrganizationID,
 	}
 }

@@ -33,7 +33,8 @@ type Manager struct {
 }
 
 type Claims struct {
-	UserID string `json:"uid"`
+	UserID         string `json:"uid"`
+	OrganizationID int64  `json:"org"`
 	jwt.RegisteredClaims
 }
 
@@ -66,11 +67,12 @@ func (m *Manager) ValidateAccess(raw string) (*Claims, error) {
 	return claims, nil
 }
 
-func (m *Manager) IssueAccess(userID string) (string, error) {
+func (m *Manager) IssueAccess(userID string, organizationID int64) (string, error) {
 	now := time.Now()
 
 	claims := Claims{
-		UserID: userID,
+		UserID:         userID,
+		OrganizationID: organizationID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			IssuedAt:  jwt.NewNumericDate(now),
 			ExpiresAt: jwt.NewNumericDate(now.Add(m.cfg.AccessTTL)),
@@ -98,8 +100,8 @@ func (m *Manager) IssueRefresh(userID string) (string, error) {
 	return raw, nil
 }
 
-func (m *Manager) IssuePair(userID, role string) (string, string, error) {
-	access, err := m.IssueAccess(userID)
+func (m *Manager) IssuePair(userID, role string, organizationID int64) (string, string, error) {
+	access, err := m.IssueAccess(userID, organizationID)
 	if err != nil {
 		return "", "", err
 	}

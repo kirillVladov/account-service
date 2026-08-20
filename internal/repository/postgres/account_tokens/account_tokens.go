@@ -23,18 +23,20 @@ func New(db *pgxpool.Pool) *Repository {
 	}
 }
 
-func (r *Repository) CreateRefreshToken(ctx context.Context, userID uuid.UUID, tokenHash string, expiresAt time.Time) error {
+func (r *Repository) CreateRefreshToken(ctx context.Context, userID uuid.UUID, organizationID int64, tokenHash string, expiresAt time.Time) error {
 	db := tx_manager.ExecutorFromContext(ctx, r.db)
 
 	const query = `
 		INSERT INTO auth_tokens (
-			user_id,   
+			user_id,
+			organization_id,
 			token_hash,
 			expires_at,
 			created_at,
 			updated_at
 		) VALUES (
 			@user_id,
+			@organization_id,
 			@token_hash,
 			@expires_at,
 			NOW(),
@@ -43,34 +45,37 @@ func (r *Repository) CreateRefreshToken(ctx context.Context, userID uuid.UUID, t
 	`
 
 	args := pgx.NamedArgs{
-		"user_id":    userID,
-		"token_hash": tokenHash,
-		"expires_at": expiresAt,
+		"user_id":         userID,
+		"organization_id": organizationID,
+		"token_hash":      tokenHash,
+		"expires_at":      expiresAt,
 	}
 
-	if err := db.QueryRow(ctx, query, args); err != nil {
+	if _, err := db.Exec(ctx, query, args); err != nil {
 		return fmt.Errorf("upsert token: %w", err)
 	}
 
 	return nil
 }
 
-func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID) (dto.AccountToken, error) {
+func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID, organizationID int64) (dto.AccountToken, error) {
 	db := tx_manager.ExecutorFromContext(ctx, r.db)
 
 	const query = `
 		SELECT
 			id,
 			user_id,
+			organization_id,
 			token_type,
 			token_hash,
 			expires_at,
 			revoked
 		FROM auth_tokens 
-		WHERE user_id = @user_id AND expires_at >= NOW() AND revoked = FALSE`
+		WHERE user_id = @user_id AND organization_id = @organization_id AND expires_at >= NOW() AND revoked = FALSE`
 
 	args := pgx.NamedArgs{
-		"user_id": userID,
+		"user_id":         userID,
+		"organization_id": organizationID,
 	}
 
 	rows, err := db.Query(ctx, query, args)
@@ -86,18 +91,19 @@ func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID) (dt
 	return convertToApplication(rawAccount), nil
 }
 
-func (r *Repository) DeactivateByUser(ctx context.Context, userID uuid.UUID) error {
+func (r *Repository) DeactivateByUser(ctx context.Context, userID uuid.UUID, organizationID int64) error {
 	db := tx_manager.ExecutorFromContext(ctx, r.db)
 
 	const query = `
 		UPDATE auth_tokens 
 			SET
 				revoked = TRUE
-		WHERE user_id = @user_id
+		WHERE user_id = @user_id AND organization_id = @organization_id
 	`
 
 	args := pgx.NamedArgs{
-		"user_id": userID,
+		"user_id":         userID,
+		"organization_id": organizationID,
 	}
 
 	if _, err := db.Exec(ctx, query, args); err != nil {
