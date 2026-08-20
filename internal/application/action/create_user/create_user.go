@@ -16,11 +16,11 @@ type AccountRepository interface {
 }
 
 type TokensRepo interface {
-	CreateRefreshToken(ctx context.Context, userID uuid.UUID, tokenHash string, expiresAt time.Time) error
+	CreateRefreshToken(ctx context.Context, userID uuid.UUID, organizationID int64, tokenHash string, expiresAt time.Time) error
 }
 
 type IssuePair interface {
-	IssuePair(userID, role string) (string, string, error)
+	IssuePair(userID, role string, organizationID int64) (string, string, error)
 }
 
 type TxManager interface {
@@ -64,7 +64,7 @@ func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequ
 			return fmt.Errorf("create account: %w", err)
 		}
 
-		token, refreshToken, err := a.tokenManager.IssuePair(created.ID.String(), string(dto.UserRoleUser))
+		token, refreshToken, err := a.tokenManager.IssuePair(created.ID.String(), string(dto.UserRoleUser), created.OrganizationID)
 		if err != nil {
 			return fmt.Errorf("issue token pair: %w", err)
 		}
@@ -72,7 +72,7 @@ func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequ
 		expires := time.Now().Add(a.tokenDuration)
 		tokenHash := token_manager.HashToken(refreshToken)
 
-		if err = a.tokensRepo.CreateRefreshToken(ctx, created.ID, tokenHash, expires); err != nil {
+		if err = a.tokensRepo.CreateRefreshToken(ctx, created.ID, created.OrganizationID, tokenHash, expires); err != nil {
 			return fmt.Errorf("create token: %w", err)
 		}
 

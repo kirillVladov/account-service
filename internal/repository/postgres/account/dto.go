@@ -7,23 +7,26 @@ import (
 )
 
 type account struct {
-	ID           uuid.UUID `db:"id"`
-	Email        string    `db:"email"`
-	PasswordHash string    `db:"password_hash"`
+	ID             uuid.UUID `db:"id"`
+	Email          string    `db:"email"`
+	PasswordHash   string    `db:"password_hash"`
+	OrganizationID int64     `db:"organization_id"`
 }
 
 func convertToApplication(in account) dto.Account {
 	return dto.Account{
-		ID:           in.ID,
-		Email:        in.Email,
-		PasswordHash: in.PasswordHash,
+		ID:             in.ID,
+		Email:          in.Email,
+		PasswordHash:   in.PasswordHash,
+		OrganizationID: in.OrganizationID,
 	}
 }
 
 func convertToRepository(in dto.Account) account {
 	return account{
-		ID:           in.ID,
-		Email:        in.Email,
-		PasswordHash: in.PasswordHash,
+		ID:             in.ID,
+		Email:          in.Email,
+		PasswordHash:   in.PasswordHash,
+		OrganizationID: in.OrganizationID,
 	}
 }

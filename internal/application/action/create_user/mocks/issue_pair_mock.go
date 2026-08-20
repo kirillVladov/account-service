@@ -36,8 +36,8 @@ func (_m *IssuePairMock) EXPECT() *IssuePairMock_Expecter {
 }
 
 // IssuePair provides a mock function for the type IssuePairMock
-func (_mock *IssuePairMock) IssuePair(userID string, role string) (string, string, error) {
-	ret := _mock.Called(userID, role)
+func (_mock *IssuePairMock) IssuePair(userID string, role string, organizationID int64) (string, string, error) {
+	ret := _mock.Called(userID, role, organizationID)
 
 	if len(ret) == 0 {
 		panic("no return value specified for IssuePair")
@@ -46,21 +46,21 @@ func (_mock *IssuePairMock) IssuePair(userID string, role string) (string, strin
 	var r0 string
 	var r1 string
 	var r2 error
-	if returnFunc, ok := ret.Get(0).(func(string, string) (string, string, error)); ok {
-		return returnFunc(userID, role)
+	if returnFunc, ok := ret.Get(0).(func(string, string, int64) (string, string, error)); ok {
+		return returnFunc(userID, role, organizationID)
 	}
-	if returnFunc, ok := ret.Get(0).(func(string, string) string); ok {
-		r0 = returnFunc(userID, role)
+	if returnFunc, ok := ret.Get(0).(func(string, string, int64) string); ok {
+		r0 = returnFunc(userID, role, organizationID)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
-	if returnFunc, ok := ret.Get(1).(func(string, string) string); ok {
-		r1 = returnFunc(userID, role)
+	if returnFunc, ok := ret.Get(1).(func(string, string, int64) string); ok {
+		r1 = returnFunc(userID, role, organizationID)
 	} else {
 		r1 = ret.Get(1).(string)
 	}
-	if returnFunc, ok := ret.Get(2).(func(string, string) error); ok {
-		r2 = returnFunc(userID, role)
+	if returnFunc, ok := ret.Get(2).(func(string, string, int64) error); ok {
+		r2 = returnFunc(userID, role, organizationID)
 	} else {
 		r2 = ret.Error(2)
 	}
@@ -75,11 +75,12 @@ type IssuePairMock_IssuePair_Call struct {
 // IssuePair is a helper method to define mock.On call
 //   - userID string
 //   - role string
-func (_e *IssuePairMock_Expecter) IssuePair(userID interface{}, role interface{}) *IssuePairMock_IssuePair_Call {
-	return &IssuePairMock_IssuePair_Call{Call: _e.mock.On("IssuePair", userID, role)}
+//   - organizationID int64
+func (_e *IssuePairMock_Expecter) IssuePair(userID interface{}, role interface{}, organizationID interface{}) *IssuePairMock_IssuePair_Call {
+	return &IssuePairMock_IssuePair_Call{Call: _e.mock.On("IssuePair", userID, role, organizationID)}
 }
 
-func (_c *IssuePairMock_IssuePair_Call) Run(run func(userID string, role string)) *IssuePairMock_IssuePair_Call {
+func (_c *IssuePairMock_IssuePair_Call) Run(run func(userID string, role string, organizationID int64)) *IssuePairMock_IssuePair_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 string
 		if args[0] != nil {
@@ -89,9 +90,14 @@ func (_c *IssuePairMock_IssuePair_Call) Run(run func(userID string, role string)
 		if args[1] != nil {
 			arg1 = args[1].(string)
 		}
+		var arg2 int64
+		if args[2] != nil {
+			arg2 = args[2].(int64)
+		}
 		run(
 			arg0,
 			arg1,
+			arg2,
 		)
 	})
 	return _c
@@ -102,7 +108,7 @@ func (_c *IssuePairMock_IssuePair_Call) Return(s string, s1 string, err error) *
 	return _c
 }
 
-func (_c *IssuePairMock_IssuePair_Call) RunAndReturn(run func(userID string, role string) (string, string, error)) *IssuePairMock_IssuePair_Call {
+func (_c *IssuePairMock_IssuePair_Call) RunAndReturn(run func(userID string, role string, organizationID int64) (string, string, error)) *IssuePairMock_IssuePair_Call {
 	_c.Call.Return(run)
 	return _c
 }

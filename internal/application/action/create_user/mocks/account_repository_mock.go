@@ -7,7 +7,6 @@ package create_user_mock
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/kirillVladov/account-service/internal/application/dto"
 	mock "github.com/stretchr/testify/mock"
 )
@@ -40,20 +39,29 @@ func (_m *AccountRepositoryMock) EXPECT() *AccountRepositoryMock_Expecter {
 }
 
 // Create provides a mock function for the type AccountRepositoryMock
-func (_mock *AccountRepositoryMock) Create(ctx context.Context, account dto.Account) error {
-	ret := _mock.Called(ctx, account)
+func (_mock *AccountRepositoryMock) Create(ctx context.Context, in dto.AccountCreateRequest) (dto.Account, error) {
+	ret := _mock.Called(ctx, in)
 
 	if len(ret) == 0 {
 		panic("no return value specified for Create")
 	}
 
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, dto.Account) error); ok {
-		r0 = returnFunc(ctx, account)
-	} else {
-		r0 = ret.Error(0)
+	var r0 dto.Account
+	var r1 error
+	if returnFunc, ok := ret.Get(0).(func(context.Context, dto.AccountCreateRequest) (dto.Account, error)); ok {
+		return returnFunc(ctx, in)
 	}
-	return r0
+	if returnFunc, ok := ret.Get(0).(func(context.Context, dto.AccountCreateRequest) dto.Account); ok {
+		r0 = returnFunc(ctx, in)
+	} else {
+		r0 = ret.Get(0).(dto.Account)
+	}
+	if returnFunc, ok := ret.Get(1).(func(context.Context, dto.AccountCreateRequest) error); ok {
+		r1 = returnFunc(ctx, in)
+	} else {
+		r1 = ret.Error(1)
+	}
+	return r0, r1
 }
 
 // AccountRepositoryMock_Create_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Create'
@@ -63,20 +71,20 @@ type AccountRepositoryMock_Create_Call struct {
 
 // Create is a helper method to define mock.On call
 //   - ctx context.Context
-//   - account dto.Account
-func (_e *AccountRepositoryMock_Expecter) Create(ctx interface{}, account interface{}) *AccountRepositoryMock_Create_Call {
-	return &AccountRepositoryMock_Create_Call{Call: _e.mock.On("Create", ctx, account)}
+//   - in dto.AccountCreateRequest
+func (_e *AccountRepositoryMock_Expecter) Create(ctx interface{}, in interface{}) *AccountRepositoryMock_Create_Call {
+	return &AccountRepositoryMock_Create_Call{Call: _e.mock.On("Create", ctx, in)}
 }
 
-func (_c *AccountRepositoryMock_Create_Call) Run(run func(ctx context.Context, account dto.Account)) *AccountRepositoryMock_Create_Call {
+func (_c *AccountRepositoryMock_Create_Call) Run(run func(ctx context.Context, in dto.AccountCreateRequest)) *AccountRepositoryMock_Create_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		var arg0 context.Context
 		if args[0] != nil {
 			arg0 = args[0].(context.Context)
 		}
-		var arg1 dto.Account
+		var arg1 dto.AccountCreateRequest
 		if args[1] != nil {
-			arg1 = args[1].(dto.Account)
+			arg1 = args[1].(dto.AccountCreateRequest)
 		}
 		run(
 			arg0,
@@ -86,75 +94,12 @@ func (_c *AccountRepositoryMock_Create_Call) Run(run func(ctx context.Context, a
 	return _c
 }
 
-func (_c *AccountRepositoryMock_Create_Call) Return(err error) *AccountRepositoryMock_Create_Call {
-	_c.Call.Return(err)
+func (_c *AccountRepositoryMock_Create_Call) Return(account dto.Account, err error) *AccountRepositoryMock_Create_Call {
+	_c.Call.Return(account, err)
 	return _c
 }
 
-func (_c *AccountRepositoryMock_Create_Call) RunAndReturn(run func(ctx context.Context, account dto.Account) error) *AccountRepositoryMock_Create_Call {
-	_c.Call.Return(run)
-	return _c
-}
-
-// UpdateToken provides a mock function for the type AccountRepositoryMock
-func (_mock *AccountRepositoryMock) UpdateToken(ctx context.Context, id uuid.UUID, token string) error {
-	ret := _mock.Called(ctx, id, token)
-
-	if len(ret) == 0 {
-		panic("no return value specified for UpdateToken")
-	}
-
-	var r0 error
-	if returnFunc, ok := ret.Get(0).(func(context.Context, uuid.UUID, string) error); ok {
-		r0 = returnFunc(ctx, id, token)
-	} else {
-		r0 = ret.Error(0)
-	}
-	return r0
-}
-
-// AccountRepositoryMock_UpdateToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'UpdateToken'
-type AccountRepositoryMock_UpdateToken_Call struct {
-	*mock.Call
-}
-
-// UpdateToken is a helper method to define mock.On call
-//   - ctx context.Context
-//   - id uuid.UUID
-//   - token string
-func (_e *AccountRepositoryMock_Expecter) UpdateToken(ctx interface{}, id interface{}, token interface{}) *AccountRepositoryMock_UpdateToken_Call {
-	return &AccountRepositoryMock_UpdateToken_Call{Call: _e.mock.On("UpdateToken", ctx, id, token)}
-}
-
-func (_c *AccountRepositoryMock_UpdateToken_Call) Run(run func(ctx context.Context, id uuid.UUID, token string)) *AccountRepositoryMock_UpdateToken_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		var arg0 context.Context
-		if args[0] != nil {
-			arg0 = args[0].(context.Context)
-		}
-		var arg1 uuid.UUID
-		if args[1] != nil {
-			arg1 = args[1].(uuid.UUID)
-		}
-		var arg2 string
-		if args[2] != nil {
-			arg2 = args[2].(string)
-		}
-		run(
-			arg0,
-			arg1,
-			arg2,
-		)
-	})
-	return _c
-}
-
-func (_c *AccountRepositoryMock_UpdateToken_Call) Return(err error) *AccountRepositoryMock_UpdateToken_Call {
-	_c.Call.Return(err)
-	return _c
-}
-
-func (_c *AccountRepositoryMock_UpdateToken_Call) RunAndReturn(run func(ctx context.Context, id uuid.UUID, token string) error) *AccountRepositoryMock_UpdateToken_Call {
+func (_c *AccountRepositoryMock_Create_Call) RunAndReturn(run func(ctx context.Context, in dto.AccountCreateRequest) (dto.Account, error)) *AccountRepositoryMock_Create_Call {
 	_c.Call.Return(run)
 	return _c
 }
