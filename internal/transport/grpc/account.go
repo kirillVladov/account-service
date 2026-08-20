@@ -31,6 +31,10 @@ type GetUserAction interface {
 	Do(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error)
 }
 
+type LoginUserAction interface {
+	Do(ctx context.Context, email, password string, organizationID int64) (dto.Account, string, string, error)
+}
+
 type AccountHandlers struct {
 	pb.UnimplementedAccountServiceServer
 
@@ -38,6 +42,7 @@ type AccountHandlers struct {
 	get                GetUserAction
 	tokenManager       TokenManager
 	refreshTokenAction RefreshTokenAction
+	login              LoginUserAction
 }
 
 func NewAccountHandlers(
@@ -45,12 +50,14 @@ func NewAccountHandlers(
 	get GetUserAction,
 	tokenManager TokenManager,
 	refreshTokenAction RefreshTokenAction,
+	login LoginUserAction,
 ) *AccountHandlers {
 	return &AccountHandlers{
 		create:             create,
 		get:                get,
 		tokenManager:       tokenManager,
 		refreshTokenAction: refreshTokenAction,
+		login:              login,
 	}
 }
 
@@ -122,6 +129,35 @@ func (h *AccountHandlers) GetAccount(ctx context.Context, req *pb.GetAccountRequ
 	}
 
 	return &pb.GetAccountReply{Account: pbAccountFromDTO(account)}, nil
+}
+
+func (h *AccountHandlers) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginReply, error) {
+	if req.GetEmail() == "" {
+		return nil, status.Error(codes.InvalidArgument, "email is empty")
+	}
+
+	if req.GetPassword() == "" {
+		return nil, status.Error(codes.InvalidArgument, "password is empty")
+	}
+
+	if req.GetOrganizationId() <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "organization_id is invalid")
+	}
+
+	account, token, refreshToken, err := h.login.Do(ctx, req.GetEmail(), req.GetPassword(), req.GetOrganizationId())
+	if err != nil {
+		if errors.Is(err, errs.ErrAccountNotFound) {
+			return nil, status.Error(codes.NotFound, "account not found")
+		}
+
+		if errors.Is(err, errs.ErrInvalidCredentials) {
+			return nil, status.Error(codes.Unauthenticated, "invalid credentials")
+		}
+
+		return nil, status.Error(codes.Internal, fmt.Sprintf("login: %v", err))
+	}
+
+	return &pb.LoginReply{Account: pbAccountFromDTO(account), Token: token, RefreshToken: refreshToken}, nil
 }
 
 func pbAccountFromDTO(a dto.Account) *pb.Account {

@@ -1,4 +1,4 @@
-package create_user
+package login_user
 
 import (
 	"context"
@@ -8,11 +8,12 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/kirillVladov/account-service/internal/application/dto"
+	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	"github.com/kirillVladov/account-service/pkg/token_manager"
 )
 
 type AccountRepository interface {
-	Create(ctx context.Context, in dto.AccountCreateRequest) (dto.Account, error)
+	GetByEmail(ctx context.Context, email string, organizationID int64) (dto.Account, error)
 }
 
 type TokensRepo interface {
@@ -27,7 +28,7 @@ type TxManager interface {
 	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
-type CreateUserAction struct {
+type LoginUserAction struct {
 	repo          AccountRepository
 	tokenManager  IssuePair
 	tokensRepo    TokensRepo
@@ -41,8 +42,8 @@ func New(
 	tokensRepo TokensRepo,
 	tokenDuration time.Duration,
 	txManager TxManager,
-) *CreateUserAction {
-	return &CreateUserAction{
+) *LoginUserAction {
+	return &LoginUserAction{
 		repo:          repo,
 		tokenManager:  tokenManager,
 		tokensRepo:    tokensRepo,
@@ -51,22 +52,26 @@ func New(
 	}
 }
 
-func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequest) (dto.Account, string, string, error) {
+func (a *LoginUserAction) Do(ctx context.Context, email, password string, organizationID int64) (dto.Account, string, string, error) {
 	var (
 		outToken        string
 		outRefreshToken string
 		outAccount      dto.Account
 	)
 
-	account.Password = token_manager.Hash(account.Password)
-
 	err := a.txManager.WithinTransaction(ctx, func(ctx context.Context) error {
-		created, err := a.repo.Create(ctx, account)
+		account, err := a.repo.GetByEmail(ctx, email, organizationID)
 		if err != nil {
-			return fmt.Errorf("create account: %w", err)
+			return err
 		}
 
-		token, refreshToken, err := a.tokenManager.IssuePair(created.ID.String(), string(dto.UserRoleUser), created.OrganizationID)
+		hashedInPassword := token_manager.Hash(password)
+
+		if account.PasswordHash != hashedInPassword {
+			return errs.ErrInvalidCredentials
+		}
+
+		token, refreshToken, err := a.tokenManager.IssuePair(account.ID.String(), string(dto.UserRoleUser), account.OrganizationID)
 		if err != nil {
 			return fmt.Errorf("issue token pair: %w", err)
 		}
@@ -74,13 +79,13 @@ func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequ
 		expires := time.Now().Add(a.tokenDuration)
 		tokenHash := token_manager.Hash(refreshToken)
 
-		if err = a.tokensRepo.CreateRefreshToken(ctx, created.ID, created.OrganizationID, tokenHash, expires); err != nil {
+		if err = a.tokensRepo.CreateRefreshToken(ctx, account.ID, account.OrganizationID, tokenHash, expires); err != nil {
 			return fmt.Errorf("create token: %w", err)
 		}
 
 		outToken = token
 		outRefreshToken = refreshToken
-		outAccount = created
+		outAccount = account
 
 		return nil
 	})
