@@ -84,12 +84,14 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 			email,
 			password_hash,
 			organization_id,
+			idempotency_key,
 			created_at,
 			updated_at
 		) VALUES(
 			@email,
 			@password_hash,
 			@organization_id,
+			@idempotency_key,
 			now(),
 			now()
 		)
@@ -104,6 +106,7 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 		"email":           in.Email,
 		"password_hash":   in.Password,
 		"organization_id": in.OrganizationID,
+		"idempotency_key": in.IdempotencyKey,
 	}
 
 	rows, err := db.Query(ctx, query, args)

@@ -30,6 +30,7 @@ type AccountCreateRequest struct {
 	Email          string
 	Password       string
 	OrganizationID int64
+	IdempotencyKey uuid.UUID
 }
 
 type AccountToken struct {

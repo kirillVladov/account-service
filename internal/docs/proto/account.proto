@@ -41,6 +41,7 @@ message CreateAccountRequest {
     string email = 1;
     string password = 2;
 	int64 organization_id = 3;
+    string idempotency_key = 4;
 }
 
 message CreateAccountReply {
