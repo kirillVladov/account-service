@@ -74,10 +74,20 @@ func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccou
 		return nil, status.Error(codes.InvalidArgument, "organization_id is invalid")
 	}
 
+	if req.GetIdempotencyKey() == "" {
+		return nil, status.Error(codes.InvalidArgument, "idempotency_key is null")
+	}
+
+	idempotencyKey, err := uuid.Parse(req.GetIdempotencyKey())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "idempotency_key is invalid")
+	}
+
 	request := dto.AccountCreateRequest{
 		Email:          req.GetEmail(),
 		Password:       req.GetPassword(),
 		OrganizationID: req.GetOrganizationId(),
+		IdempotencyKey: idempotencyKey,
 	}
 
 	account, token, refreshToken, err := h.create.Do(ctx, request)

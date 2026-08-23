@@ -332,6 +332,7 @@ type CreateAccountRequest struct {
 	Email          string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
 	Password       string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
 	OrganizationId int64                  `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	IdempotencyKey string                 `protobuf:"bytes,4,opt,name=idempotency_key,json=idempotencyKey,proto3" json:"idempotency_key,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -385,6 +386,13 @@ func (x *CreateAccountRequest) GetOrganizationId() int64 {
 		return x.OrganizationId
 	}
 	return 0
+}
+
+func (x *CreateAccountRequest) GetIdempotencyKey() string {
+	if x != nil {
+		return x.IdempotencyKey
+	}
+	return ""
 }
 
 type CreateAccountReply struct {
@@ -721,11 +729,12 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"N\n" +
 	"\x11RefreshTokenReply\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"q\n" +
+	"\rrefresh_token\x18\x02 \x01(\tR\frefreshToken\"\x9a\x01\n" +
 	"\x14CreateAccountRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\x12'\n" +
-	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\"v\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\x12'\n" +
+	"\x0fidempotency_key\x18\x04 \x01(\tR\x0eidempotencyKey\"v\n" +
 	"\x12CreateAccountReply\x12%\n" +
 	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\x12\x14\n" +
 	"\x05token\x18\x02 \x01(\tR\x05token\x12#\n" +
