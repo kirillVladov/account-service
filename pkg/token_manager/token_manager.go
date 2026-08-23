@@ -19,7 +19,7 @@ var (
 
 type Config struct {
 	// Secret is the HMAC-SHA256 signing key for access tokens.
-	Secret string
+	Secret []byte
 
 	AccessTTL  time.Duration
 	RefreshTTL time.Duration
