@@ -23,6 +23,7 @@ const (
 	AccountService_GetAccount_FullMethodName    = "/pb.AccountService/GetAccount"
 	AccountService_RefreshToken_FullMethodName  = "/pb.AccountService/RefreshToken"
 	AccountService_VerifyToken_FullMethodName   = "/pb.AccountService/VerifyToken"
+	AccountService_Login_FullMethodName         = "/pb.AccountService/Login"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -33,6 +34,7 @@ type AccountServiceClient interface {
 	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountReply, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error)
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenReply, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 }
 
 type accountServiceClient struct {
@@ -83,6 +85,16 @@ func (c *accountServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenR
 	return out, nil
 }
 
+func (c *accountServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, AccountService_Login_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
@@ -91,6 +103,7 @@ type AccountServiceServer interface {
 	GetAccount(context.Context, *GetAccountRequest) (*GetAccountReply, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenReply, error)
+	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -112,6 +125,9 @@ func (UnimplementedAccountServiceServer) RefreshToken(context.Context, *RefreshT
 }
 func (UnimplementedAccountServiceServer) VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method VerifyToken not implemented")
+}
+func (UnimplementedAccountServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 func (UnimplementedAccountServiceServer) testEmbeddedByValue()                        {}
@@ -206,6 +222,24 @@ func _AccountService_VerifyToken_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_Login_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +262,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyToken",
 			Handler:    _AccountService_VerifyToken_Handler,
+		},
+		{
+			MethodName: "Login",
+			Handler:    _AccountService_Login_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

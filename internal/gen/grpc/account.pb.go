@@ -581,6 +581,126 @@ func (x *GetAccountReply) GetAccount() *Account {
 	return nil
 }
 
+type LoginRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Email          string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password       string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	OrganizationId int64                  `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *LoginRequest) Reset() {
+	*x = LoginRequest{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginRequest) ProtoMessage() {}
+
+func (x *LoginRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginRequest.ProtoReflect.Descriptor instead.
+func (*LoginRequest) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *LoginRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *LoginRequest) GetPassword() string {
+	if x != nil {
+		return x.Password
+	}
+	return ""
+}
+
+func (x *LoginRequest) GetOrganizationId() int64 {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return 0
+}
+
+type LoginReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Account       *Account               `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Token         string                 `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+	RefreshToken  string                 `protobuf:"bytes,3,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginReply) Reset() {
+	*x = LoginReply{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginReply) ProtoMessage() {}
+
+func (x *LoginReply) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginReply.ProtoReflect.Descriptor instead.
+func (*LoginReply) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *LoginReply) GetAccount() *Account {
+	if x != nil {
+		return x.Account
+	}
+	return nil
+}
+
+func (x *LoginReply) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *LoginReply) GetRefreshToken() string {
+	if x != nil {
+		return x.RefreshToken
+	}
+	return ""
+}
+
 var File_internal_docs_proto_account_proto protoreflect.FileDescriptor
 
 const file_internal_docs_proto_account_proto_rawDesc = "" +
@@ -621,13 +741,23 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\n" +
 	"identifier\"8\n" +
 	"\x0fGetAccountReply\x12%\n" +
-	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount2\x92\x02\n" +
+	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\"i\n" +
+	"\fLoginRequest\x12\x14\n" +
+	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12'\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\"n\n" +
+	"\n" +
+	"LoginReply\x12%\n" +
+	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\x12\x14\n" +
+	"\x05token\x18\x02 \x01(\tR\x05token\x12#\n" +
+	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken2\xbf\x02\n" +
 	"\x0eAccountService\x12C\n" +
 	"\rCreateAccount\x12\x18.pb.CreateAccountRequest\x1a\x16.pb.CreateAccountReply\"\x00\x12:\n" +
 	"\n" +
 	"GetAccount\x12\x15.pb.GetAccountRequest\x1a\x13.pb.GetAccountReply\"\x00\x12@\n" +
 	"\fRefreshToken\x12\x17.pb.RefreshTokenRequest\x1a\x15.pb.RefreshTokenReply\"\x00\x12=\n" +
-	"\vVerifyToken\x12\x16.pb.VerifyTokenRequest\x1a\x14.pb.VerifyTokenReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
+	"\vVerifyToken\x12\x16.pb.VerifyTokenRequest\x1a\x14.pb.VerifyTokenReply\"\x00\x12+\n" +
+	"\x05Login\x12\x10.pb.LoginRequest\x1a\x0e.pb.LoginReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
 
 var (
 	file_internal_docs_proto_account_proto_rawDescOnce sync.Once
@@ -642,7 +772,7 @@ func file_internal_docs_proto_account_proto_rawDescGZIP() []byte {
 }
 
 var file_internal_docs_proto_account_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
+var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_internal_docs_proto_account_proto_goTypes = []any{
 	(GetAccountRequest_ErrorCode)(0), // 0: pb.GetAccountRequest.ErrorCode
 	(*Account)(nil),                  // 1: pb.Account
@@ -654,23 +784,28 @@ var file_internal_docs_proto_account_proto_goTypes = []any{
 	(*CreateAccountReply)(nil),       // 7: pb.CreateAccountReply
 	(*GetAccountRequest)(nil),        // 8: pb.GetAccountRequest
 	(*GetAccountReply)(nil),          // 9: pb.GetAccountReply
+	(*LoginRequest)(nil),             // 10: pb.LoginRequest
+	(*LoginReply)(nil),               // 11: pb.LoginReply
 }
 var file_internal_docs_proto_account_proto_depIdxs = []int32{
-	1, // 0: pb.CreateAccountReply.account:type_name -> pb.Account
-	1, // 1: pb.GetAccountReply.account:type_name -> pb.Account
-	6, // 2: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
-	8, // 3: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
-	4, // 4: pb.AccountService.RefreshToken:input_type -> pb.RefreshTokenRequest
-	2, // 5: pb.AccountService.VerifyToken:input_type -> pb.VerifyTokenRequest
-	7, // 6: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
-	9, // 7: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
-	5, // 8: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
-	3, // 9: pb.AccountService.VerifyToken:output_type -> pb.VerifyTokenReply
-	6, // [6:10] is the sub-list for method output_type
-	2, // [2:6] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	1,  // 0: pb.CreateAccountReply.account:type_name -> pb.Account
+	1,  // 1: pb.GetAccountReply.account:type_name -> pb.Account
+	1,  // 2: pb.LoginReply.account:type_name -> pb.Account
+	6,  // 3: pb.AccountService.CreateAccount:input_type -> pb.CreateAccountRequest
+	8,  // 4: pb.AccountService.GetAccount:input_type -> pb.GetAccountRequest
+	4,  // 5: pb.AccountService.RefreshToken:input_type -> pb.RefreshTokenRequest
+	2,  // 6: pb.AccountService.VerifyToken:input_type -> pb.VerifyTokenRequest
+	10, // 7: pb.AccountService.Login:input_type -> pb.LoginRequest
+	7,  // 8: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
+	9,  // 9: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
+	5,  // 10: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
+	3,  // 11: pb.AccountService.VerifyToken:output_type -> pb.VerifyTokenReply
+	11, // 12: pb.AccountService.Login:output_type -> pb.LoginReply
+	8,  // [8:13] is the sub-list for method output_type
+	3,  // [3:8] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_internal_docs_proto_account_proto_init() }
@@ -688,7 +823,7 @@ func file_internal_docs_proto_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_docs_proto_account_proto_rawDesc), len(file_internal_docs_proto_account_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   9,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

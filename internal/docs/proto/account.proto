@@ -9,6 +9,7 @@ service AccountService {
     rpc GetAccount(GetAccountRequest) returns (GetAccountReply) {};
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply) {};
     rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenReply) {};
+    rpc Login(LoginRequest) returns (LoginReply) {};
 }
 
 message Account {
@@ -64,4 +65,16 @@ message GetAccountRequest {
 
 message GetAccountReply {
     Account account = 1;
+}
+
+message LoginRequest {
+    string email = 1;
+    string password = 2;
+    int64 organization_id = 3;
+}
+
+message LoginReply {
+    Account account = 1;
+    string token = 2;
+    string refresh_token = 3;
 }

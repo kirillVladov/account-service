@@ -8,5 +8,6 @@ func (di *DI) AccountHandler() *grpc.AccountHandlers {
 		di.GetUserAction(),
 		di.TokenManager(),
 		di.RefreshTokenAction(),
+		di.LoginUserAction(),
 	)
 }

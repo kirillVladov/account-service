@@ -46,6 +46,36 @@ func (r *Repository) GetByID(ctx context.Context, id uuid.UUID, organizationID i
 	return convertToApplication(account), nil
 }
 
+func (r *Repository) GetByEmail(ctx context.Context, email string, organizationID int64) (dto.Account, error) {
+	db := txManager.ExecutorFromContext(ctx, r.db)
+
+	const query = `
+		SELECT
+			id,
+			email,
+			password_hash,
+			organization_id
+		FROM account
+		WHERE email = $1 AND organization_id = $2
+	`
+
+	row, err := db.Query(ctx, query, email, organizationID)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("query account by email: %w", err)
+	}
+
+	account, err := pgx.CollectOneRow(row, pgx.RowToStructByName[account])
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return dto.Account{}, errs.ErrAccountNotFound
+		}
+
+		return dto.Account{}, fmt.Errorf("collect account row: %w", err)
+	}
+
+	return convertToApplication(account), nil
+}
+
 func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (dto.Account, error) {
 	db := txManager.ExecutorFromContext(ctx, r.db)
 

@@ -57,7 +57,7 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 		return "", "", fmt.Errorf("get account creds: %w", err)
 	}
 
-	hashedOldhRefreshToken := token_manager.HashToken(oldRefreshToken)
+	hashedOldhRefreshToken := token_manager.Hash(oldRefreshToken)
 
 	if accountCreds.Revoked || hashedOldhRefreshToken != accountCreds.TokenHash {
 		return "", "", errs.ErrForbidden
