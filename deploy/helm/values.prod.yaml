@@ -32,6 +32,7 @@ env:
   TOKEN_SECRET: "secret"
   GRPC_PORT: 50052
   DEBUG_PORT: 8001
+  NOTIFICATION_SERVICE_ADDR: "notification-service-service.notification-service.svc.cluster.local:50052"
 
 metrics:
   enabled: true
