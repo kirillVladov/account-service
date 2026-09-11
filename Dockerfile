@@ -1,5 +1,5 @@
 # Используем официальный образ Golang
-FROM --platform=linux/amd64 golang:1.25 AS builder
+FROM --platform=linux/amd64 golang:1.26 AS builder
 
 # Устанавливаем рабочую директорию
 WORKDIR /app
