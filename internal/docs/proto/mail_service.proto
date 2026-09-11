@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package = "/internal/gen/grpc;pb";
+
+service MailService {
+    rpc SendEmailConfirmation(SendEmailConfirmationRequest) returns (SendEmailConfirmationResponse) {}
+    rpc SendManualEmail(SendManualEmailRequest) returns (SendManualEmailResponse) {}
+}
+
+message SendManualEmailRequest {
+    string template = 1;
+    repeated string emails = 2;
+}
+
+message SendManualEmailResponse {}
+
+message SendEmailConfirmationRequest {
+    int64 organization_id = 1;
+    string confirmation_link = 2;
+    string email = 3;
+};
+
+message SendEmailConfirmationResponse {};

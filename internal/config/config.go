@@ -10,9 +10,14 @@ type AuthToken struct {
 }
 
 type Config struct {
-	PostgresUrl string `envconfig:"POSTGRES_URL" required:"true"`
-	GRPCPort    int32  `envconfig:"GRPC_PORT" default:"50051"`
-	DebugPort   int32  `envconfig:"DEBUG_PORT" required:"true"`
+	PostgresUrl             string `envconfig:"POSTGRES_URL" required:"true"`
+	GRPCPort                int32  `envconfig:"GRPC_PORT" default:"50051"`
+	DebugPort               int32  `envconfig:"DEBUG_PORT" required:"true"`
+	NotificationServiceAddr NotificationService
 
 	AuthToken AuthToken
+}
+
+type NotificationService struct {
+	Addr string `envconfig:"NOTIFICATION_SERVICE_ADDR" required:"true"`
 }

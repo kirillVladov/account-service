@@ -6,11 +6,13 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/kirillVladov/account-service/internal/config"
+	"github.com/kirillVladov/account-service/pkg/notification_client"
 )
 
 type DI struct {
-	config *config.Config
-	logger *zap.Logger
+	config             *config.Config
+	logger             *zap.Logger
+	notificatoinClient *notification_client.NotificationClient
 
 	db *pgxpool.Pool
 }
