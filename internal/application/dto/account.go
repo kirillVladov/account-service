@@ -24,6 +24,7 @@ type Account struct {
 	Email          string
 	PasswordHash   string
 	OrganizationID int64
+	IsConfirmed    bool
 }
 
 type AccountCreateRequest struct {
