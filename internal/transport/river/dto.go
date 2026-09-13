@@ -1,6 +1,8 @@
-package river_consumer
+package river_transport
 
 import "github.com/google/uuid"
+
+const AccountConfirmationQueue = "account_confirmation_workflow"
 
 type AccountConfirmationEvent struct {
 	AccountID      uuid.UUID `json:"id" river:"unique"`
@@ -8,5 +10,5 @@ type AccountConfirmationEvent struct {
 }
 
 func (AccountConfirmationEvent) Kind() string {
-	return "account_confirmation_workflow"
+	return AccountConfirmationQueue
 }

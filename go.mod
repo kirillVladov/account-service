@@ -10,6 +10,7 @@ require (
 	github.com/labstack/echo/v4 v4.15.2
 	github.com/prometheus/client_golang v1.23.2
 	github.com/riverqueue/river v0.47.0
+	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.47.0
 	github.com/stretchr/testify v1.12.1
 	go.uber.org/zap v1.28.0
 	google.golang.org/grpc v1.81.1

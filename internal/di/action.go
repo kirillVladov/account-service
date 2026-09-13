@@ -5,6 +5,8 @@ import (
 	"github.com/kirillVladov/account-service/internal/application/action/get_user"
 	"github.com/kirillVladov/account-service/internal/application/action/login_user"
 	refreshtoken_action "github.com/kirillVladov/account-service/internal/application/action/refresh_token"
+	"github.com/kirillVladov/account-service/internal/application/action/send_email_confirmation_email"
+	notification_gateway "github.com/kirillVladov/account-service/internal/gateway/grpc/notification"
 )
 
 func (di *DI) CreateUserAction() *create_user.CreateUserAction {
@@ -35,5 +37,16 @@ func (di *DI) LoginUserAction() *login_user.LoginUserAction {
 		di.AccountTokenRepository(),
 		di.config.AuthToken.RefreshTokenTTL,
 		di.TxManager(),
+	)
+}
+
+func (di *DI) NotificationGateway() *notification_gateway.Gateway {
+	return notification_gateway.New(di.NotificationServiceClient())
+}
+
+func (di *DI) SendMailForConfirmAccount() *send_email_confirmation_email.Action {
+	return send_email_confirmation_email.New(
+		di.AccountRepository(),
+		di.NotificationGateway(),
 	)
 }

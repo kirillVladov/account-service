@@ -7,12 +7,14 @@ import (
 
 	"github.com/kirillVladov/account-service/internal/config"
 	"github.com/kirillVladov/account-service/pkg/notification_client"
+	river_client "github.com/kirillVladov/account-service/pkg/river"
 )
 
 type DI struct {
 	config             *config.Config
 	logger             *zap.Logger
 	notificatoinClient *notification_client.NotificationClient
+	queue              *river_client.Client
 
 	db *pgxpool.Pool
 }

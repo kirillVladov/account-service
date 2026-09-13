@@ -6,6 +6,8 @@ import (
 
 	"github.com/google/uuid"
 	riverqueue "github.com/riverqueue/river"
+
+	river_transport "github.com/kirillVladov/account-service/internal/transport/river"
 )
 
 type Action interface {
@@ -13,7 +15,7 @@ type Action interface {
 }
 
 type AccountConfirmationWorker struct {
-	riverqueue.WorkerDefaults[AccountConfirmationEvent]
+	riverqueue.WorkerDefaults[river_transport.AccountConfirmationEvent]
 	action Action
 }
 
@@ -23,7 +25,7 @@ func New(action Action) *AccountConfirmationWorker {
 	}
 }
 
-func (w *AccountConfirmationWorker) Work(ctx context.Context, job *riverqueue.Job[AccountConfirmationEvent]) error {
+func (w *AccountConfirmationWorker) Work(ctx context.Context, job *riverqueue.Job[river_transport.AccountConfirmationEvent]) error {
 	if err := w.action.Send(ctx, job.Args.AccountID, job.Args.OrganizationID); err != nil {
 		return fmt.Errorf("send account confirmation request: %w", err)
 	}
