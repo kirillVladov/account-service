@@ -17,6 +17,7 @@ func (di *DI) CreateUserAction() *create_user.CreateUserAction {
 		di.AccountRepository(),
 		di.TokenManager(),
 		di.AccountTokenRepository(),
+		di.QueueEmailConfirmationAction(),
 		di.config.AuthToken.RefreshTokenTTL,
 		di.TxManager(),
 	)

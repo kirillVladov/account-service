@@ -27,10 +27,15 @@ type TxManager interface {
 	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
 }
 
+type QueueEmailConfirmation interface {
+	Queue(ctx context.Context, accountID uuid.UUID, organizationID int64) error
+}
+
 type CreateUserAction struct {
 	repo          AccountRepository
 	tokenManager  IssuePair
 	tokensRepo    TokensRepo
+	queueEmail    QueueEmailConfirmation
 	tokenDuration time.Duration
 	txManager     TxManager
 }
@@ -39,6 +44,7 @@ func New(
 	repo AccountRepository,
 	tokenManager IssuePair,
 	tokensRepo TokensRepo,
+	queueEmail QueueEmailConfirmation,
 	tokenDuration time.Duration,
 	txManager TxManager,
 ) *CreateUserAction {
@@ -46,6 +52,7 @@ func New(
 		repo:          repo,
 		tokenManager:  tokenManager,
 		tokensRepo:    tokensRepo,
+		queueEmail:    queueEmail,
 		tokenDuration: tokenDuration,
 		txManager:     txManager,
 	}
@@ -77,6 +84,10 @@ func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequ
 		if err = a.tokensRepo.CreateRefreshToken(ctx, created.ID, created.OrganizationID, tokenHash, expires); err != nil {
 			return fmt.Errorf("create token: %w", err)
 		}
+
+		// if err = a.queueEmail.Queue(ctx, created.ID, created.OrganizationID); err != nil {
+		// 	return fmt.Errorf("queue email confirmation: %w", err)
+		// }
 
 		outToken = token
 		outRefreshToken = refreshToken
