@@ -27,7 +27,7 @@ func New(db *pgxpool.Pool) *Repository {
 func (r *Repository) GetByID(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error) {
 	db := txManager.ExecutorFromContext(ctx, r.db)
 
-	row, err := db.Query(ctx, "SELECT id, email, password_hash, organization_id FROM account WHERE id = $1 AND organization_id = $2", id, organizationID)
+	row, err := db.Query(ctx, "SELECT id, email, password_hash, organization_id, confirmed FROM account WHERE id = $1 AND organization_id = $2", id, organizationID)
 	if err != nil {
 		return dto.Account{}, fmt.Errorf("query account: %w", err)
 	}
@@ -54,7 +54,8 @@ func (r *Repository) GetByEmail(ctx context.Context, email string, organizationI
 			id,
 			email,
 			password_hash,
-			organization_id
+			organization_id,
+			confirmed
 		FROM account
 		WHERE email = $1 AND organization_id = $2
 	`
@@ -99,7 +100,8 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 			id,
 			email,
 			password_hash,
-			organization_id
+			organization_id,
+			confirmed
 	`
 
 	args := pgx.NamedArgs{
@@ -120,4 +122,20 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 	}
 
 	return convertToApplication(raw), nil
+}
+
+func (r *Repository) SetConfirmed(ctx context.Context, id uuid.UUID, organizationID int64) error {
+	db := txManager.ExecutorFromContext(ctx, r.db)
+
+	const query = `
+		UPDATE account
+		SET confirmed = TRUE, updated_at = NOW()
+		WHERE id = $1 AND organization_id = $2
+	`
+
+	if _, err := db.Exec(ctx, query, id, organizationID); err != nil {
+		return fmt.Errorf("set confirmed: %w", err)
+	}
+
+	return nil
 }

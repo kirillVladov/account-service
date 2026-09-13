@@ -9,8 +9,8 @@ import (
 type TokenType string
 
 const (
-	TokenTypeRefresh TokenType = "refresh"
-	TokenTypeAccess  TokenType = "access"
+	TokenTypeRefresh          TokenType = "refresh_token"
+	TokenTypeEmailConfirm     TokenType = "email_confirmation_token"
 )
 
 type UserRole string

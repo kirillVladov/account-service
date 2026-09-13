@@ -56,6 +56,7 @@ func NewAccountHandlers(
 	tokenManager TokenManager,
 	refreshTokenAction RefreshTokenAction,
 	login LoginUserAction,
+	confirmEmail ConfirmEmailAction,
 ) *AccountHandlers {
 	return &AccountHandlers{
 		create:             create,
@@ -63,6 +64,7 @@ func NewAccountHandlers(
 		tokenManager:       tokenManager,
 		refreshTokenAction: refreshTokenAction,
 		login:              login,
+		confirmEmail:       confirmEmail,
 	}
 }
 
@@ -177,10 +179,13 @@ func (h *AccountHandlers) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 
 func (h *AccountHandlers) ConfirmEmail(ctx context.Context, req *pb.ConfirmEmailRequest) (*pb.ConfirmEmailReply, error) {
 	if err := h.confirmEmail.Confirm(ctx, req.ConfirmationToken); err != nil {
-		if errors.Is(err, errs.ErrAccountNotFound) ||
-			errors.Is(err, errs.ErrTokenNotValid) ||
-			errors.Is(err, errs.ErrAccountBlocked) {
+		switch {
+		case errors.Is(err, errs.ErrAccountNotFound),
+			errors.Is(err, errs.ErrTokenNotValid),
+			errors.Is(err, errs.ErrAccountBlocked):
 			return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("confirm email: %v", err))
+		case errors.Is(err, errs.ErrAccountAlreadyConfirmed):
+			return nil, status.Error(codes.AlreadyExists, fmt.Sprintf("confirm email: %v", err))
 		}
 
 		return nil, status.Error(codes.Internal, fmt.Sprintf("confirm email: %v", err))

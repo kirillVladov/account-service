@@ -23,7 +23,7 @@ func convertToApplication(in accountToken) dto.AccountToken {
 		ID:             in.ID,
 		UserID:         in.UserID,
 		OrganizationID: in.OrganizationID,
-		TokenType:      dto.TokenType(in.TokenHash),
+		TokenType:      dto.TokenType(in.TokenType),
 		TokenHash:      in.TokenHash,
 		ExpiresAt:      in.ExpiresAt,
 		Revoked:        in.Revoked,

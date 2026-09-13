@@ -11,6 +11,7 @@ type account struct {
 	Email          string    `db:"email"`
 	PasswordHash   string    `db:"password_hash"`
 	OrganizationID int64     `db:"organization_id"`
+	Confirmed      bool      `db:"confirmed"`
 }
 
 func convertToApplication(in account) dto.Account {
@@ -19,6 +20,7 @@ func convertToApplication(in account) dto.Account {
 		Email:          in.Email,
 		PasswordHash:   in.PasswordHash,
 		OrganizationID: in.OrganizationID,
+		IsConfirmed:    in.Confirmed,
 	}
 }
 

@@ -1,6 +1,7 @@
 package di
 
 import (
+	"github.com/kirillVladov/account-service/internal/application/action/confirm_email"
 	"github.com/kirillVladov/account-service/internal/application/action/create_user"
 	"github.com/kirillVladov/account-service/internal/application/action/get_user"
 	"github.com/kirillVladov/account-service/internal/application/action/login_user"
@@ -48,5 +49,12 @@ func (di *DI) SendMailForConfirmAccount() *send_email_confirmation_email.Action 
 	return send_email_confirmation_email.New(
 		di.AccountRepository(),
 		di.NotificationGateway(),
+	)
+}
+
+func (di *DI) ConfirmEmailAction() *confirm_email.Action {
+	return confirm_email.New(
+		di.AccountRepository(),
+		di.AccountTokenRepository(),
 	)
 }
