@@ -9,6 +9,7 @@ import (
 
 	river_transport "github.com/kirillVladov/account-service/internal/transport/river"
 	river_client "github.com/kirillVladov/account-service/pkg/river"
+	tx_manager "github.com/kirillVladov/account-service/pkg/tx"
 )
 
 type Producer struct {
@@ -39,9 +40,18 @@ func (p *Producer) ProduceAccountConfirmationEvent(
 }
 
 func (p *Producer) insert(ctx context.Context, args riverqueue.JobArgs, queue string) error {
-	_, err := p.client.GetClient().Insert(ctx, args, &riverqueue.InsertOpts{
+	opts := &riverqueue.InsertOpts{
 		Queue: queue,
-	})
+	}
+
+	var err error
+
+	if tx, ok := tx_manager.TxFromContext(ctx); ok {
+		_, err = p.client.GetClient().InsertTx(ctx, tx, args, opts)
+	} else {
+		_, err = p.client.GetClient().Insert(ctx, args, opts)
+	}
+
 	if err != nil {
 		return fmt.Errorf("insert job: %w", err)
 	}

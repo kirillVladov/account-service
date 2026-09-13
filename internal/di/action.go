@@ -6,8 +6,10 @@ import (
 	"github.com/kirillVladov/account-service/internal/application/action/get_user"
 	"github.com/kirillVladov/account-service/internal/application/action/login_user"
 	refreshtoken_action "github.com/kirillVladov/account-service/internal/application/action/refresh_token"
+	"github.com/kirillVladov/account-service/internal/application/action/queue_email_confirmation"
 	"github.com/kirillVladov/account-service/internal/application/action/send_email_confirmation_email"
 	notification_gateway "github.com/kirillVladov/account-service/internal/gateway/grpc/notification"
+	river_producer "github.com/kirillVladov/account-service/internal/transport/river/producer"
 )
 
 func (di *DI) CreateUserAction() *create_user.CreateUserAction {
@@ -56,5 +58,19 @@ func (di *DI) ConfirmEmailAction() *confirm_email.Action {
 	return confirm_email.New(
 		di.AccountRepository(),
 		di.AccountTokenRepository(),
+	)
+}
+
+func (di *DI) Producer() *river_producer.Producer {
+	return river_producer.New(di.AccountConfirmationQueue())
+}
+
+func (di *DI) QueueEmailConfirmationAction() *queue_email_confirmation.Action {
+	return queue_email_confirmation.New(
+		di.AccountRepository(),
+		di.AccountTokenRepository(),
+		di.Producer(),
+		di.TxManager(),
+		di.config.AuthToken.TokenTTL,
 	)
 }
