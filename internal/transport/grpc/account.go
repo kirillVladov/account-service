@@ -35,10 +35,15 @@ type LoginUserAction interface {
 	Do(ctx context.Context, email, password string, organizationID int64) (dto.Account, string, string, error)
 }
 
+type ConfirmEmailAction interface {
+	Confirm(ctx context.Context, confirmationToken string) error
+}
+
 type AccountHandlers struct {
 	pb.UnimplementedAccountServiceServer
 
 	create             CreateAccountAction
+	confirmEmail       ConfirmEmailAction
 	get                GetUserAction
 	tokenManager       TokenManager
 	refreshTokenAction RefreshTokenAction
@@ -168,6 +173,20 @@ func (h *AccountHandlers) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 	}
 
 	return &pb.LoginReply{Account: pbAccountFromDTO(account), Token: token, RefreshToken: refreshToken}, nil
+}
+
+func (h *AccountHandlers) ConfirmEmail(ctx context.Context, req *pb.ConfirmEmailRequest) (*pb.ConfirmEmailReply, error) {
+	if err := h.confirmEmail.Confirm(ctx, req.ConfirmationToken); err != nil {
+		if errors.Is(err, errs.ErrAccountNotFound) ||
+			errors.Is(err, errs.ErrTokenNotValid) ||
+			errors.Is(err, errs.ErrAccountBlocked) {
+			return nil, status.Error(codes.PermissionDenied, fmt.Sprintf("confirm email: %v", err))
+		}
+
+		return nil, status.Error(codes.Internal, fmt.Sprintf("confirm email: %v", err))
+	}
+
+	return &pb.ConfirmEmailReply{}, nil
 }
 
 func pbAccountFromDTO(a dto.Account) *pb.Account {

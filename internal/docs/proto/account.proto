@@ -10,6 +10,7 @@ service AccountService {
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenReply) {};
     rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenReply) {};
     rpc Login(LoginRequest) returns (LoginReply) {};
+    rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfirmEmailReply) {};
 }
 
 message Account {
@@ -79,3 +80,9 @@ message LoginReply {
     string token = 2;
     string refresh_token = 3;
 }
+
+message ConfirmEmailRequest {
+    string confirmation_token = 1;
+}
+
+message ConfirmEmailReply {}

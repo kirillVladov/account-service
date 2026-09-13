@@ -709,6 +709,86 @@ func (x *LoginReply) GetRefreshToken() string {
 	return ""
 }
 
+type ConfirmEmailRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	ConfirmationToken string                 `protobuf:"bytes,1,opt,name=confirmation_token,json=confirmationToken,proto3" json:"confirmation_token,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ConfirmEmailRequest) Reset() {
+	*x = ConfirmEmailRequest{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConfirmEmailRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConfirmEmailRequest) ProtoMessage() {}
+
+func (x *ConfirmEmailRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConfirmEmailRequest.ProtoReflect.Descriptor instead.
+func (*ConfirmEmailRequest) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *ConfirmEmailRequest) GetConfirmationToken() string {
+	if x != nil {
+		return x.ConfirmationToken
+	}
+	return ""
+}
+
+type ConfirmEmailReply struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ConfirmEmailReply) Reset() {
+	*x = ConfirmEmailReply{}
+	mi := &file_internal_docs_proto_account_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConfirmEmailReply) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConfirmEmailReply) ProtoMessage() {}
+
+func (x *ConfirmEmailReply) ProtoReflect() protoreflect.Message {
+	mi := &file_internal_docs_proto_account_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConfirmEmailReply.ProtoReflect.Descriptor instead.
+func (*ConfirmEmailReply) Descriptor() ([]byte, []int) {
+	return file_internal_docs_proto_account_proto_rawDescGZIP(), []int{12}
+}
+
 var File_internal_docs_proto_account_proto protoreflect.FileDescriptor
 
 const file_internal_docs_proto_account_proto_rawDesc = "" +
@@ -759,14 +839,18 @@ const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"LoginReply\x12%\n" +
 	"\aaccount\x18\x01 \x01(\v2\v.pb.AccountR\aaccount\x12\x14\n" +
 	"\x05token\x18\x02 \x01(\tR\x05token\x12#\n" +
-	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken2\xbf\x02\n" +
+	"\rrefresh_token\x18\x03 \x01(\tR\frefreshToken\"D\n" +
+	"\x13ConfirmEmailRequest\x12-\n" +
+	"\x12confirmation_token\x18\x01 \x01(\tR\x11confirmationToken\"\x13\n" +
+	"\x11ConfirmEmailReply2\x81\x03\n" +
 	"\x0eAccountService\x12C\n" +
 	"\rCreateAccount\x12\x18.pb.CreateAccountRequest\x1a\x16.pb.CreateAccountReply\"\x00\x12:\n" +
 	"\n" +
 	"GetAccount\x12\x15.pb.GetAccountRequest\x1a\x13.pb.GetAccountReply\"\x00\x12@\n" +
 	"\fRefreshToken\x12\x17.pb.RefreshTokenRequest\x1a\x15.pb.RefreshTokenReply\"\x00\x12=\n" +
 	"\vVerifyToken\x12\x16.pb.VerifyTokenRequest\x1a\x14.pb.VerifyTokenReply\"\x00\x12+\n" +
-	"\x05Login\x12\x10.pb.LoginRequest\x1a\x0e.pb.LoginReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
+	"\x05Login\x12\x10.pb.LoginRequest\x1a\x0e.pb.LoginReply\"\x00\x12@\n" +
+	"\fConfirmEmail\x12\x17.pb.ConfirmEmailRequest\x1a\x15.pb.ConfirmEmailReply\"\x00B\x17Z\x15/internal/gen/grpc;pbb\x06proto3"
 
 var (
 	file_internal_docs_proto_account_proto_rawDescOnce sync.Once
@@ -781,7 +865,7 @@ func file_internal_docs_proto_account_proto_rawDescGZIP() []byte {
 }
 
 var file_internal_docs_proto_account_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
+var file_internal_docs_proto_account_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_internal_docs_proto_account_proto_goTypes = []any{
 	(GetAccountRequest_ErrorCode)(0), // 0: pb.GetAccountRequest.ErrorCode
 	(*Account)(nil),                  // 1: pb.Account
@@ -795,6 +879,8 @@ var file_internal_docs_proto_account_proto_goTypes = []any{
 	(*GetAccountReply)(nil),          // 9: pb.GetAccountReply
 	(*LoginRequest)(nil),             // 10: pb.LoginRequest
 	(*LoginReply)(nil),               // 11: pb.LoginReply
+	(*ConfirmEmailRequest)(nil),      // 12: pb.ConfirmEmailRequest
+	(*ConfirmEmailReply)(nil),        // 13: pb.ConfirmEmailReply
 }
 var file_internal_docs_proto_account_proto_depIdxs = []int32{
 	1,  // 0: pb.CreateAccountReply.account:type_name -> pb.Account
@@ -805,13 +891,15 @@ var file_internal_docs_proto_account_proto_depIdxs = []int32{
 	4,  // 5: pb.AccountService.RefreshToken:input_type -> pb.RefreshTokenRequest
 	2,  // 6: pb.AccountService.VerifyToken:input_type -> pb.VerifyTokenRequest
 	10, // 7: pb.AccountService.Login:input_type -> pb.LoginRequest
-	7,  // 8: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
-	9,  // 9: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
-	5,  // 10: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
-	3,  // 11: pb.AccountService.VerifyToken:output_type -> pb.VerifyTokenReply
-	11, // 12: pb.AccountService.Login:output_type -> pb.LoginReply
-	8,  // [8:13] is the sub-list for method output_type
-	3,  // [3:8] is the sub-list for method input_type
+	12, // 8: pb.AccountService.ConfirmEmail:input_type -> pb.ConfirmEmailRequest
+	7,  // 9: pb.AccountService.CreateAccount:output_type -> pb.CreateAccountReply
+	9,  // 10: pb.AccountService.GetAccount:output_type -> pb.GetAccountReply
+	5,  // 11: pb.AccountService.RefreshToken:output_type -> pb.RefreshTokenReply
+	3,  // 12: pb.AccountService.VerifyToken:output_type -> pb.VerifyTokenReply
+	11, // 13: pb.AccountService.Login:output_type -> pb.LoginReply
+	13, // 14: pb.AccountService.ConfirmEmail:output_type -> pb.ConfirmEmailReply
+	9,  // [9:15] is the sub-list for method output_type
+	3,  // [3:9] is the sub-list for method input_type
 	3,  // [3:3] is the sub-list for extension type_name
 	3,  // [3:3] is the sub-list for extension extendee
 	0,  // [0:3] is the sub-list for field type_name
@@ -832,7 +920,7 @@ func file_internal_docs_proto_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_internal_docs_proto_account_proto_rawDesc), len(file_internal_docs_proto_account_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   11,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

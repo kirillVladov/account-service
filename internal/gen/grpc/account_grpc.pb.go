@@ -24,6 +24,7 @@ const (
 	AccountService_RefreshToken_FullMethodName  = "/pb.AccountService/RefreshToken"
 	AccountService_VerifyToken_FullMethodName   = "/pb.AccountService/VerifyToken"
 	AccountService_Login_FullMethodName         = "/pb.AccountService/Login"
+	AccountService_ConfirmEmail_FullMethodName  = "/pb.AccountService/ConfirmEmail"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -35,6 +36,7 @@ type AccountServiceClient interface {
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error)
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenReply, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfirmEmailReply, error)
 }
 
 type accountServiceClient struct {
@@ -95,6 +97,16 @@ func (c *accountServiceClient) Login(ctx context.Context, in *LoginRequest, opts
 	return out, nil
 }
 
+func (c *accountServiceClient) ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfirmEmailReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ConfirmEmailReply)
+	err := c.cc.Invoke(ctx, AccountService_ConfirmEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
@@ -104,6 +116,7 @@ type AccountServiceServer interface {
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenReply, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
+	ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailReply, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -128,6 +141,9 @@ func (UnimplementedAccountServiceServer) VerifyToken(context.Context, *VerifyTok
 }
 func (UnimplementedAccountServiceServer) Login(context.Context, *LoginRequest) (*LoginReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedAccountServiceServer) ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method ConfirmEmail not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 func (UnimplementedAccountServiceServer) testEmbeddedByValue()                        {}
@@ -240,6 +256,24 @@ func _AccountService_Login_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_ConfirmEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConfirmEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).ConfirmEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_ConfirmEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).ConfirmEmail(ctx, req.(*ConfirmEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +300,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _AccountService_Login_Handler,
+		},
+		{
+			MethodName: "ConfirmEmail",
+			Handler:    _AccountService_ConfirmEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
