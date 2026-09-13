@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"github.com/kirillVladov/account-service/internal/application/dto"
@@ -113,6 +114,11 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 
 	rows, err := db.Query(ctx, query, args)
 	if err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return dto.Account{}, errs.ErrAccountAlreadyExists
+		}
+
 		return dto.Account{}, fmt.Errorf("exec query: insert account: %w", err)
 	}
 

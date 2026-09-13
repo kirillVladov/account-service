@@ -106,6 +106,10 @@ func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccou
 
 	account, token, refreshToken, err := h.create.Do(ctx, request)
 	if err != nil {
+		if errors.Is(err, errs.ErrAccountAlreadyExists) {
+			return nil, status.Error(codes.AlreadyExists, "account already exists")
+		}
+
 		return nil, status.Error(codes.Internal, fmt.Sprintf("create account: %v", err))
 	}
 

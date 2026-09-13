@@ -10,4 +10,5 @@ var (
 	ErrOrganizationNotFound   = errors.New("organization not found")
 	ErrForbidden              = errors.New("forbidden")
 	ErrInvalidCredentials     = errors.New("invalid credentials")
+	ErrAccountAlreadyExists   = errors.New("account already exists")
 )
