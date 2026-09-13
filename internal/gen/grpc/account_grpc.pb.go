@@ -19,12 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AccountService_CreateAccount_FullMethodName = "/pb.AccountService/CreateAccount"
-	AccountService_GetAccount_FullMethodName    = "/pb.AccountService/GetAccount"
-	AccountService_RefreshToken_FullMethodName  = "/pb.AccountService/RefreshToken"
-	AccountService_VerifyToken_FullMethodName   = "/pb.AccountService/VerifyToken"
-	AccountService_Login_FullMethodName         = "/pb.AccountService/Login"
-	AccountService_ConfirmEmail_FullMethodName  = "/pb.AccountService/ConfirmEmail"
+	AccountService_CreateAccount_FullMethodName           = "/pb.AccountService/CreateAccount"
+	AccountService_GetAccount_FullMethodName              = "/pb.AccountService/GetAccount"
+	AccountService_RefreshToken_FullMethodName            = "/pb.AccountService/RefreshToken"
+	AccountService_VerifyToken_FullMethodName             = "/pb.AccountService/VerifyToken"
+	AccountService_Login_FullMethodName                   = "/pb.AccountService/Login"
+	AccountService_ConfirmEmail_FullMethodName            = "/pb.AccountService/ConfirmEmail"
+	AccountService_ResendEmailConfirmation_FullMethodName = "/pb.AccountService/ResendEmailConfirmation"
 )
 
 // AccountServiceClient is the client API for AccountService service.
@@ -37,6 +38,7 @@ type AccountServiceClient interface {
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenReply, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	ConfirmEmail(ctx context.Context, in *ConfirmEmailRequest, opts ...grpc.CallOption) (*ConfirmEmailReply, error)
+	ResendEmailConfirmation(ctx context.Context, in *ResendEmailConfirmationRequest, opts ...grpc.CallOption) (*ResendEmailConfirmationReply, error)
 }
 
 type accountServiceClient struct {
@@ -107,6 +109,16 @@ func (c *accountServiceClient) ConfirmEmail(ctx context.Context, in *ConfirmEmai
 	return out, nil
 }
 
+func (c *accountServiceClient) ResendEmailConfirmation(ctx context.Context, in *ResendEmailConfirmationRequest, opts ...grpc.CallOption) (*ResendEmailConfirmationReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ResendEmailConfirmationReply)
+	err := c.cc.Invoke(ctx, AccountService_ResendEmailConfirmation_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountServiceServer is the server API for AccountService service.
 // All implementations must embed UnimplementedAccountServiceServer
 // for forward compatibility.
@@ -117,6 +129,7 @@ type AccountServiceServer interface {
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenReply, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailReply, error)
+	ResendEmailConfirmation(context.Context, *ResendEmailConfirmationRequest) (*ResendEmailConfirmationReply, error)
 	mustEmbedUnimplementedAccountServiceServer()
 }
 
@@ -144,6 +157,9 @@ func (UnimplementedAccountServiceServer) Login(context.Context, *LoginRequest) (
 }
 func (UnimplementedAccountServiceServer) ConfirmEmail(context.Context, *ConfirmEmailRequest) (*ConfirmEmailReply, error) {
 	return nil, status.Error(codes.Unimplemented, "method ConfirmEmail not implemented")
+}
+func (UnimplementedAccountServiceServer) ResendEmailConfirmation(context.Context, *ResendEmailConfirmationRequest) (*ResendEmailConfirmationReply, error) {
+	return nil, status.Error(codes.Unimplemented, "method ResendEmailConfirmation not implemented")
 }
 func (UnimplementedAccountServiceServer) mustEmbedUnimplementedAccountServiceServer() {}
 func (UnimplementedAccountServiceServer) testEmbeddedByValue()                        {}
@@ -274,6 +290,24 @@ func _AccountService_ConfirmEmail_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountService_ResendEmailConfirmation_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ResendEmailConfirmationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountServiceServer).ResendEmailConfirmation(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AccountService_ResendEmailConfirmation_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountServiceServer).ResendEmailConfirmation(ctx, req.(*ResendEmailConfirmationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountService_ServiceDesc is the grpc.ServiceDesc for AccountService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -304,6 +338,10 @@ var AccountService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConfirmEmail",
 			Handler:    _AccountService_ConfirmEmail_Handler,
+		},
+		{
+			MethodName: "ResendEmailConfirmation",
+			Handler:    _AccountService_ResendEmailConfirmation_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

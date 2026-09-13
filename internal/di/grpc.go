@@ -10,5 +10,6 @@ func (di *DI) AccountHandler() *grpc.AccountHandlers {
 		di.RefreshTokenAction(),
 		di.LoginUserAction(),
 		di.ConfirmEmailAction(),
+		di.QueueEmailConfirmationAction(),
 	)
 }

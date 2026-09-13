@@ -39,6 +39,10 @@ type ConfirmEmailAction interface {
 	Confirm(ctx context.Context, confirmationToken string) error
 }
 
+type QueueEmailConfirmationAction interface {
+	Queue(ctx context.Context, accountID uuid.UUID, organizationID int64) error
+}
+
 type AccountHandlers struct {
 	pb.UnimplementedAccountServiceServer
 
@@ -48,6 +52,7 @@ type AccountHandlers struct {
 	tokenManager       TokenManager
 	refreshTokenAction RefreshTokenAction
 	login              LoginUserAction
+	queueEmailConf     QueueEmailConfirmationAction
 }
 
 func NewAccountHandlers(
@@ -57,6 +62,7 @@ func NewAccountHandlers(
 	refreshTokenAction RefreshTokenAction,
 	login LoginUserAction,
 	confirmEmail ConfirmEmailAction,
+	queueEmailConf QueueEmailConfirmationAction,
 ) *AccountHandlers {
 	return &AccountHandlers{
 		create:             create,
@@ -65,6 +71,7 @@ func NewAccountHandlers(
 		refreshTokenAction: refreshTokenAction,
 		login:              login,
 		confirmEmail:       confirmEmail,
+		queueEmailConf:     queueEmailConf,
 	}
 }
 
@@ -178,7 +185,7 @@ func (h *AccountHandlers) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 }
 
 func (h *AccountHandlers) ConfirmEmail(ctx context.Context, req *pb.ConfirmEmailRequest) (*pb.ConfirmEmailReply, error) {
-	if err := h.confirmEmail.Confirm(ctx, req.ConfirmationToken); err != nil {
+	if err := h.confirmEmail.Confirm(ctx, req.GetConfirmationToken()); err != nil {
 		switch {
 		case errors.Is(err, errs.ErrAccountNotFound),
 			errors.Is(err, errs.ErrTokenNotValid),
@@ -192,6 +199,23 @@ func (h *AccountHandlers) ConfirmEmail(ctx context.Context, req *pb.ConfirmEmail
 	}
 
 	return &pb.ConfirmEmailReply{}, nil
+}
+
+func (h *AccountHandlers) ResendEmailConfirmation(ctx context.Context, req *pb.ResendEmailConfirmationRequest) (*pb.ResendEmailConfirmationReply, error) {
+	accountID, err := uuid.Parse(req.GetAccountId())
+	if err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid account_id")
+	}
+
+	if req.GetOrganizationId() <= 0 {
+		return nil, status.Error(codes.InvalidArgument, "organization_id is invalid")
+	}
+
+	if err = h.queueEmailConf.Queue(ctx, accountID, req.GetOrganizationId()); err != nil {
+		return nil, status.Error(codes.Internal, fmt.Sprintf("resend email confirmation: %v", err))
+	}
+
+	return &pb.ResendEmailConfirmationReply{}, nil
 }
 
 func pbAccountFromDTO(a dto.Account) *pb.Account {

@@ -11,6 +11,7 @@ service AccountService {
     rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenReply) {};
     rpc Login(LoginRequest) returns (LoginReply) {};
     rpc ConfirmEmail(ConfirmEmailRequest) returns (ConfirmEmailReply) {};
+    rpc ResendEmailConfirmation(ResendEmailConfirmationRequest) returns (ResendEmailConfirmationReply) {};
 }
 
 message Account {
@@ -86,3 +87,10 @@ message ConfirmEmailRequest {
 }
 
 message ConfirmEmailReply {}
+
+message ResendEmailConfirmationRequest {
+    string account_id = 1;
+    int64 organization_id = 2;
+}
+
+message ResendEmailConfirmationReply {}
