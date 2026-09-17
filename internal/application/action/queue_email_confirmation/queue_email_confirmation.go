@@ -55,15 +55,6 @@ func New(
 
 func (a *Action) Queue(ctx context.Context, accountID uuid.UUID, organizationID int64) error {
 	return a.txManager.WithinTransaction(ctx, func(ctx context.Context) error {
-		account, err := a.accountRepo.GetByID(ctx, accountID, organizationID)
-		if err != nil {
-			return fmt.Errorf("get account by id: %w", err)
-		}
-
-		if account.IsConfirmed {
-			return nil
-		}
-
 		token, err := generateToken()
 		if err != nil {
 			return fmt.Errorf("generate token: %w", err)
@@ -72,11 +63,11 @@ func (a *Action) Queue(ctx context.Context, accountID uuid.UUID, organizationID 
 		tokenHash := token_manager.Hash(token)
 		expiresAt := time.Now().Add(a.tokenTTL)
 
-		if err = a.tokensRepo.CreateConfirmationToken(ctx, account.ID, account.OrganizationID, tokenHash, expiresAt); err != nil {
+		if err = a.tokensRepo.CreateConfirmationToken(ctx, accountID, organizationID, tokenHash, expiresAt); err != nil {
 			return fmt.Errorf("create confirmation token: %w", err)
 		}
 
-		if err = a.producer.ProduceAccountConfirmationEvent(ctx, account.ID, account.OrganizationID, tokenHash); err != nil {
+		if err = a.producer.ProduceAccountConfirmationEvent(ctx, accountID, organizationID, tokenHash); err != nil {
 			return fmt.Errorf("produce account confirmation event: %w", err)
 		}
 
