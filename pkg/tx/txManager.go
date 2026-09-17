@@ -29,7 +29,13 @@ func NewTxManager(db *pgxpool.Pool) *TxManager {
 
 // WithinTransaction executes callback within a single DB transaction.
 // Created transaction is stored in context for repository methods.
+// If a transaction already exists in the context, the callback is executed
+// within that existing transaction without starting a new one.
 func (m *TxManager) WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) (err error) {
+	if _, ok := TxFromContext(ctx); ok {
+		return fn(ctx)
+	}
+
 	tx, err := m.db.Begin(ctx)
 	if err != nil {
 		return fmt.Errorf("begin tx: %w", err)
