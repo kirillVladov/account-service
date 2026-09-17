@@ -22,7 +22,7 @@ type TokensRepository interface {
 }
 
 type Producer interface {
-	ProduceAccountConfirmationEvent(ctx context.Context, accountID uuid.UUID, organizationID int64) error
+	ProduceAccountConfirmationEvent(ctx context.Context, accountID uuid.UUID, organizationID int64, confirmationLink string) error
 }
 
 type TxManager interface {
@@ -76,7 +76,7 @@ func (a *Action) Queue(ctx context.Context, accountID uuid.UUID, organizationID 
 			return fmt.Errorf("create confirmation token: %w", err)
 		}
 
-		if err = a.producer.ProduceAccountConfirmationEvent(ctx, account.ID, account.OrganizationID); err != nil {
+		if err = a.producer.ProduceAccountConfirmationEvent(ctx, account.ID, account.OrganizationID, tokenHash); err != nil {
 			return fmt.Errorf("produce account confirmation event: %w", err)
 		}
 

@@ -32,7 +32,7 @@ func New(
 	}
 }
 
-func (a *Action) Send(ctx context.Context, accountID uuid.UUID, organizationID int64) error {
+func (a *Action) Send(ctx context.Context, accountID uuid.UUID, organizationID int64, confirmationLink string) error {
 	account, err := a.accountRepository.GetByID(ctx, accountID, organizationID)
 	if err != nil {
 		return fmt.Errorf("get account by id: %w", err)
@@ -42,7 +42,7 @@ func (a *Action) Send(ctx context.Context, accountID uuid.UUID, organizationID i
 		return nil
 	}
 
-	err = a.notificationsGateway.SendEmailConfirmation(ctx, account.OrganizationID, "", account.Email)
+	err = a.notificationsGateway.SendEmailConfirmation(ctx, account.OrganizationID, confirmationLink, account.Email)
 	if err != nil {
 		return fmt.Errorf("send email confirmation: %w", err)
 	}

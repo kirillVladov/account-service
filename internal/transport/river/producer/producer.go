@@ -26,10 +26,12 @@ func (p *Producer) ProduceAccountConfirmationEvent(
 	ctx context.Context,
 	accountID uuid.UUID,
 	organizationID int64,
+	confirmationLink string,
 ) error {
 	args := river_transport.AccountConfirmationEvent{
-		AccountID:      accountID,
-		OrganizationID: organizationID,
+		AccountID:        accountID,
+		OrganizationID:   organizationID,
+		ConfirmationLink: confirmationLink,
 	}
 
 	if err := p.insert(ctx, args, river_transport.AccountConfirmationQueue); err != nil {

@@ -11,7 +11,7 @@ import (
 )
 
 type Action interface {
-	Send(ctx context.Context, accountID uuid.UUID, organizationID int64) error
+	Send(ctx context.Context, accountID uuid.UUID, organizationID int64, confirmationLink string) error
 }
 
 type AccountConfirmationWorker struct {
@@ -26,7 +26,7 @@ func New(action Action) *AccountConfirmationWorker {
 }
 
 func (w *AccountConfirmationWorker) Work(ctx context.Context, job *riverqueue.Job[river_transport.AccountConfirmationEvent]) error {
-	if err := w.action.Send(ctx, job.Args.AccountID, job.Args.OrganizationID); err != nil {
+	if err := w.action.Send(ctx, job.Args.AccountID, job.Args.OrganizationID, job.Args.ConfirmationLink); err != nil {
 		return fmt.Errorf("send account confirmation request: %w", err)
 	}
 
