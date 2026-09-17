@@ -130,4 +130,6 @@ metrics: {}
 podAnnotations: {}
 
 # Ingress annotations
-ingressAnnotations: {} 
+ingressAnnotations: {}
+
+backgroundWorkers: []

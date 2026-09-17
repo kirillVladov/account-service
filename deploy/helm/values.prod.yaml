@@ -80,3 +80,9 @@ healthCheck:
     timeoutSeconds: 5
     failureThreshold: 3
     successThreshold: 1
+
+backgroundWorkers:
+  - name: background-worker
+    workerKind: background-worker
+    replicas: 1
+    command: "/background-worker"

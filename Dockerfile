@@ -14,7 +14,8 @@ RUN go mod download
 COPY . .
 
 # Собираем приложение
-RUN CGO_ENABLED=0 GOOS=linux go build -o /app cmd/account-service/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/account-service cmd/account-service/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -o /app/background-worker cmd/background-worker/main.go
 
 # Используем более легкий образ для запуска
 FROM alpine:latest
@@ -27,10 +28,11 @@ ENV GOOS="linux/whatever"
 RUN apk --no-cache add ca-certificates
 
 # Копируем собранное приложение из предыдущего этапа
-COPY --from=builder /app .
+COPY --from=builder /app/account-service /account-service
+COPY --from=builder /app/background-worker /background-worker
 
 RUN mkdir -p /migrations
 COPY --from=builder /app/build/app/migrations /migrations
 
 # Указываем команду для запуска приложения
-CMD ["/main"]
+CMD ["/account-service"]

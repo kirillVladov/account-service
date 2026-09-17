@@ -1,0 +1,41 @@
+{{- range $w := .Values.backgroundWorkers }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "account-service.fullname" $ }}-background-worker-{{ $w.name }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "account-service.name" $ }}
+    app.kubernetes.io/instance: {{ $.Release.Name }}
+    background-worker: {{ $w.name }}
+
+spec:
+  replicas: {{ $w.replicas | default 1 }}
+  selector:
+    matchLabels:
+      background-worker: {{ $w.name }}
+  template:
+    metadata:
+      labels:
+        background-worker: {{ $w.name }}
+    spec:
+      {{- with $.Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: worker
+          image: {{ include "account-service.image" $ }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "account-service.fullname" $ }}-config
+            - secretRef:
+                name: {{ include "account-service.fullname" $ }}-secrets
+          command:
+            - {{ $w.command | default "/main-task-handler" | quote }}
+          resources:
+            {{- toYaml $.Values.resources | nindent 12 }}
+
+
+{{- end }}
