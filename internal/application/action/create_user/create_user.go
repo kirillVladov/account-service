@@ -85,9 +85,9 @@ func (a *CreateUserAction) Do(ctx context.Context, account dto.AccountCreateRequ
 			return fmt.Errorf("create token: %w", err)
 		}
 
-		// if err = a.queueEmail.Queue(ctx, created.ID, created.OrganizationID); err != nil {
-		// 	return fmt.Errorf("queue email confirmation: %w", err)
-		// }
+		if err = a.queueEmail.Queue(ctx, created.ID, created.OrganizationID); err != nil {
+			return fmt.Errorf("queue email confirmation: %w", err)
+		}
 
 		outToken = token
 		outRefreshToken = refreshToken
