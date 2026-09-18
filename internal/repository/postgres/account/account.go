@@ -28,7 +28,7 @@ func New(db *pgxpool.Pool) *Repository {
 func (r *Repository) GetByID(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error) {
 	db := txManager.ExecutorFromContext(ctx, r.db)
 
-	row, err := db.Query(ctx, "SELECT id, email, password_hash, organization_id, confirmed FROM account WHERE id = $1 AND organization_id = $2", id, organizationID)
+	row, err := db.Query(ctx, "SELECT id, email, password_hash, organization_id, confirmed, blocked FROM account WHERE id = $1 AND organization_id = $2", id, organizationID)
 	if err != nil {
 		return dto.Account{}, fmt.Errorf("query account: %w", err)
 	}
@@ -56,7 +56,8 @@ func (r *Repository) GetByEmail(ctx context.Context, email string, organizationI
 			email,
 			password_hash,
 			organization_id,
-			confirmed
+			confirmed,
+			blocked
 		FROM account
 		WHERE email = $1 AND organization_id = $2
 	`
@@ -102,7 +103,8 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 			email,
 			password_hash,
 			organization_id,
-			confirmed
+			confirmed,
+			blocked
 	`
 
 	args := pgx.NamedArgs{
@@ -128,6 +130,22 @@ func (r *Repository) Create(ctx context.Context, in dto.AccountCreateRequest) (d
 	}
 
 	return convertToApplication(raw), nil
+}
+
+func (r *Repository) SetBlocked(ctx context.Context, id uuid.UUID, organizationID int64, blocked bool) error {
+	db := txManager.ExecutorFromContext(ctx, r.db)
+
+	const query = `
+		UPDATE account
+		SET blocked = $3, updated_at = NOW()
+		WHERE id = $1 AND organization_id = $2
+	`
+
+	if _, err := db.Exec(ctx, query, id, organizationID, blocked); err != nil {
+		return fmt.Errorf("set blocked: %w", err)
+	}
+
+	return nil
 }
 
 func (r *Repository) SetConfirmed(ctx context.Context, id uuid.UUID, organizationID int64) error {

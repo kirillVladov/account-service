@@ -72,6 +72,8 @@ type Account struct {
 	Id             string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Email          string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	OrganizationId int64                  `protobuf:"varint,3,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+	Confirmed      bool                   `protobuf:"varint,4,opt,name=confirmed,proto3" json:"confirmed,omitempty"`
+	Blocked        bool                   `protobuf:"varint,5,opt,name=blocked,proto3" json:"blocked,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -125,6 +127,20 @@ func (x *Account) GetOrganizationId() int64 {
 		return x.OrganizationId
 	}
 	return 0
+}
+
+func (x *Account) GetConfirmed() bool {
+	if x != nil {
+		return x.Confirmed
+	}
+	return false
+}
+
+func (x *Account) GetBlocked() bool {
+	if x != nil {
+		return x.Blocked
+	}
+	return false
 }
 
 type VerifyTokenRequest struct {
@@ -881,11 +897,13 @@ var File_internal_docs_proto_account_proto protoreflect.FileDescriptor
 
 const file_internal_docs_proto_account_proto_rawDesc = "" +
 	"\n" +
-	"!internal/docs/proto/account.proto\x12\x02pb\"X\n" +
+	"!internal/docs/proto/account.proto\x12\x02pb\"\x90\x01\n" +
 	"\aAccount\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12'\n" +
-	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\"*\n" +
+	"\x0forganization_id\x18\x03 \x01(\x03R\x0eorganizationId\x12\x1c\n" +
+	"\tconfirmed\x18\x04 \x01(\bR\tconfirmed\x12\x18\n" +
+	"\ablocked\x18\x05 \x01(\bR\ablocked\"*\n" +
 	"\x12VerifyTokenRequest\x12\x14\n" +
 	"\x05token\x18\x01 \x01(\tR\x05token\"Z\n" +
 	"\x10VerifyTokenReply\x12\x1d\n" +

@@ -227,5 +227,7 @@ func pbAccountFromDTO(a dto.Account) *pb.Account {
 		Id:             a.ID.String(),
 		Email:          a.Email,
 		OrganizationId: a.OrganizationID,
+		Confirmed:      a.IsConfirmed,
+		Blocked:        a.IsBlocked,
 	}
 }

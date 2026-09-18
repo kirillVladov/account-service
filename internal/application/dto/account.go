@@ -25,6 +25,7 @@ type Account struct {
 	PasswordHash   string
 	OrganizationID int64
 	IsConfirmed    bool
+	IsBlocked      bool
 }
 
 type AccountCreateRequest struct {

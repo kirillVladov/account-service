@@ -18,6 +18,8 @@ message Account {
     string id = 1;         
 	string email = 2;
 	int64 organization_id = 3;
+	bool confirmed = 4;
+	bool blocked = 5;
 }
 
 message VerifyTokenRequest {

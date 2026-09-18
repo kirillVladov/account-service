@@ -12,6 +12,7 @@ type account struct {
 	PasswordHash   string    `db:"password_hash"`
 	OrganizationID int64     `db:"organization_id"`
 	Confirmed      bool      `db:"confirmed"`
+	Blocked        bool      `db:"blocked"`
 }
 
 func convertToApplication(in account) dto.Account {
@@ -21,6 +22,7 @@ func convertToApplication(in account) dto.Account {
 		PasswordHash:   in.PasswordHash,
 		OrganizationID: in.OrganizationID,
 		IsConfirmed:    in.Confirmed,
+		IsBlocked:      in.Blocked,
 	}
 }
 
