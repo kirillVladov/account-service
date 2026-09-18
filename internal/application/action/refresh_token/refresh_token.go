@@ -13,6 +13,10 @@ import (
 	"github.com/kirillVladov/account-service/pkg/token_manager"
 )
 
+type AccountRepository interface {
+	GetByID(ctx context.Context, id uuid.UUID, organizationID int64) (dto.Account, error)
+}
+
 type TokenManager interface {
 	ValidateAccess(raw string) (*token_manager.Claims, error)
 	IssuePair(userID, role string, organizationID int64) (string, string, error)
@@ -25,16 +29,37 @@ type AccountTokensRepository interface {
 	GetTokenByUserID(ctx context.Context, userID uuid.UUID, organizationID int64) (dto.AccountToken, error)
 }
 
+type TxManager interface {
+	WithinTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
 type RefreshTokenAction struct {
 	tokenManager           TokenManager
 	accountTokenRepository AccountTokensRepository
+	accountRepository      AccountRepository
+	txManager              TxManager
 }
 
-func New(tokenManager TokenManager, accountTokenRepository AccountTokensRepository) *RefreshTokenAction {
+func New(tokenManager TokenManager, accountTokenRepository AccountTokensRepository, accountRepository AccountRepository, txManager TxManager) *RefreshTokenAction {
 	return &RefreshTokenAction{
 		tokenManager:           tokenManager,
 		accountTokenRepository: accountTokenRepository,
+		accountRepository:      accountRepository,
+		txManager:              txManager,
 	}
+}
+
+func (a *RefreshTokenAction) getAccount(ctx context.Context, userID uuid.UUID, organizationID int64) (dto.Account, error) {
+	account, err := a.accountRepository.GetByID(ctx, userID, organizationID)
+	if err != nil {
+		return dto.Account{}, fmt.Errorf("get account: %w", err)
+	}
+
+	if account.IsBlocked {
+		return dto.Account{}, errs.ErrAccountBlocked
+	}
+
+	return account, nil
 }
 
 func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshToken string) (string, string, error) {
@@ -49,10 +74,15 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 
 	userId, err := uuid.Parse(claims.UserID)
 	if err != nil {
-		return "", "", fmt.Errorf("parse user id: %w", err)
+		return "", "", fmt.Errorf("parse userID: %w", err)
 	}
 
-	accountCreds, err := a.accountTokenRepository.GetTokenByUserID(ctx, userId, claims.OrganizationID)
+	account, err := a.getAccount(ctx, userId, claims.OrganizationID)
+	if err != nil {
+		return "", "", err
+	}
+
+	accountCreds, err := a.accountTokenRepository.GetTokenByUserID(ctx, account.ID, claims.OrganizationID)
 	if err != nil {
 		return "", "", fmt.Errorf("get account creds: %w", err)
 	}
@@ -77,14 +107,19 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 		return "", "", fmt.Errorf("generate pairs: %w", err)
 	}
 
-	err = a.accountTokenRepository.DeactivateByUser(ctx, userId, claims.OrganizationID)
-	if err != nil {
-		return "", "", fmt.Errorf("deactivate user: %w", err)
-	}
+	err = a.txManager.WithinTransaction(ctx, func(ctx context.Context) error {
+		if err = a.accountTokenRepository.DeactivateByUser(ctx, account.ID, claims.OrganizationID); err != nil {
+			return fmt.Errorf("deactivate user: %w", err)
+		}
 
-	err = a.accountTokenRepository.CreateRefreshToken(ctx, userId, claims.OrganizationID, refreshToken, time.Now())
+		if err = a.accountTokenRepository.CreateRefreshToken(ctx, account.ID, claims.OrganizationID, refreshToken, time.Now()); err != nil {
+			return fmt.Errorf("create refresh token: %w", err)
+		}
+
+		return nil
+	})
 	if err != nil {
-		return "", "", fmt.Errorf("deactivate user: %w", err)
+		return "", "", err
 	}
 
 	return token, refreshToken, nil
