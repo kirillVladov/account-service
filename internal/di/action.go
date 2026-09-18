@@ -31,6 +31,7 @@ func (di *DI) RefreshTokenAction() *refreshtoken_action.RefreshTokenAction {
 	return refreshtoken_action.New(
 		di.TokenManager(),
 		di.AccountTokenRepository(),
+		di.AccountRepository(),
 	)
 }
 

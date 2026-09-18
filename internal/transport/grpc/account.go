@@ -128,6 +128,14 @@ func (h *AccountHandlers) VerifyToken(ctx context.Context, req *pb.VerifyTokenRe
 func (h *AccountHandlers) RefreshToken(ctx context.Context, req *pb.RefreshTokenRequest) (*pb.RefreshTokenReply, error) {
 	token, refreshToken, err := h.refreshTokenAction.Refresh(ctx, req.GetToken(), req.GetRefreshToken())
 	if err != nil {
+		if errors.Is(err, errs.ErrAccountBlocked) {
+			return nil, status.Error(codes.PermissionDenied, "account blocked")
+		}
+
+		if errors.Is(err, errs.ErrForbidden) {
+			return nil, status.Error(codes.PermissionDenied, "forbidden")
+		}
+
 		return nil, status.Error(codes.Internal, "not valid token")
 	}
 
@@ -180,6 +188,10 @@ func (h *AccountHandlers) Login(ctx context.Context, req *pb.LoginRequest) (*pb.
 
 		if errors.Is(err, errs.ErrInvalidCredentials) {
 			return nil, status.Error(codes.Unauthenticated, "invalid credentials")
+		}
+
+		if errors.Is(err, errs.ErrAccountBlocked) {
+			return nil, status.Error(codes.PermissionDenied, "account blocked")
 		}
 
 		return nil, status.Error(codes.Internal, fmt.Sprintf("login: %v", err))

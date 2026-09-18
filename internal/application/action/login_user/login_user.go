@@ -65,6 +65,10 @@ func (a *LoginUserAction) Do(ctx context.Context, email, password string, organi
 			return err
 		}
 
+		if account.IsBlocked {
+			return errs.ErrAccountBlocked
+		}
+
 		hashedInPassword := token_manager.Hash(password)
 
 		if account.PasswordHash != hashedInPassword {
