@@ -67,7 +67,7 @@ func (a *Action) Queue(ctx context.Context, accountID uuid.UUID, organizationID 
 			return fmt.Errorf("create confirmation token: %w", err)
 		}
 
-		if err = a.producer.ProduceAccountConfirmationEvent(ctx, accountID, organizationID, tokenHash); err != nil {
+		if err = a.producer.ProduceAccountConfirmationEvent(ctx, accountID, organizationID, token); err != nil {
 			return fmt.Errorf("produce account confirmation event: %w", err)
 		}
 
