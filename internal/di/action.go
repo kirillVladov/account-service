@@ -33,6 +33,7 @@ func (di *DI) RefreshTokenAction() *refreshtoken_action.RefreshTokenAction {
 		di.AccountTokenRepository(),
 		di.AccountRepository(),
 		di.TxManager(),
+		di.config.AuthToken.RefreshTokenTTL,
 	)
 }
 

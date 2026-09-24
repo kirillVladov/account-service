@@ -38,14 +38,16 @@ type RefreshTokenAction struct {
 	accountTokenRepository AccountTokensRepository
 	accountRepository      AccountRepository
 	txManager              TxManager
+	refreshTTL             time.Duration
 }
 
-func New(tokenManager TokenManager, accountTokenRepository AccountTokensRepository, accountRepository AccountRepository, txManager TxManager) *RefreshTokenAction {
+func New(tokenManager TokenManager, accountTokenRepository AccountTokensRepository, accountRepository AccountRepository, txManager TxManager, refreshTTL time.Duration) *RefreshTokenAction {
 	return &RefreshTokenAction{
 		tokenManager:           tokenManager,
 		accountTokenRepository: accountTokenRepository,
 		accountRepository:      accountRepository,
 		txManager:              txManager,
+		refreshTTL:             refreshTTL,
 	}
 }
 
@@ -112,7 +114,10 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 			return fmt.Errorf("deactivate user: %w", err)
 		}
 
-		if err = a.accountTokenRepository.CreateRefreshToken(ctx, account.ID, claims.OrganizationID, refreshToken, time.Now()); err != nil {
+		hashedRefreshToken := token_manager.Hash(refreshToken)
+		expiresAt := time.Now().Add(a.refreshTTL)
+		
+		if err = a.accountTokenRepository.CreateRefreshToken(ctx, account.ID, claims.OrganizationID, hashedRefreshToken, expiresAt); err != nil {
 			return fmt.Errorf("create refresh token: %w", err)
 		}
 

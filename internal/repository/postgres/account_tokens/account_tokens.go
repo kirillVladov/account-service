@@ -114,11 +114,14 @@ func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID, org
 			expires_at,
 			revoked
 		FROM auth_tokens 
-		WHERE user_id = @user_id AND organization_id = @organization_id AND expires_at >= NOW() AND revoked = FALSE`
+		WHERE user_id = @user_id AND organization_id = @organization_id AND token_type = @token_type AND expires_at >= NOW() AND revoked = FALSE
+		ORDER BY expires_at DESC, id DESC
+		LIMIT 1`
 
 	args := pgx.NamedArgs{
 		"user_id":         userID,
 		"organization_id": organizationID,
+		"token_type":      string(dto.TokenTypeRefresh),
 	}
 
 	rows, err := db.Query(ctx, query, args)
@@ -128,6 +131,10 @@ func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID, org
 
 	rawAccount, err := pgx.CollectOneRow(rows, pgx.RowToStructByName[accountToken])
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return dto.AccountToken{}, errs.ErrTokenNotValid
+		}
+		
 		return dto.AccountToken{}, fmt.Errorf("parse auth_tokens: %w", err)
 	}
 
