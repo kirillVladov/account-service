@@ -142,9 +142,17 @@ func (r *Repository) GetTokenByUserID(ctx context.Context, userID uuid.UUID, org
 }
 
 func (r *Repository) GetByTokenHash(ctx context.Context, tokenHash string) (dto.AccountToken, error) {
+	return r.getByTokenHash(ctx, tokenHash, false)
+}
+
+func (r *Repository) GetByTokenHashWithExpired(ctx context.Context, tokenHash string) (dto.AccountToken, error) {
+	return r.getByTokenHash(ctx, tokenHash, true)
+}
+
+func (r *Repository) getByTokenHash(ctx context.Context, tokenHash string, withExpired bool) (dto.AccountToken, error) {
 	db := tx_manager.ExecutorFromContext(ctx, r.db)
 
-	const query = `
+	query := `
 		SELECT
 			id,
 			user_id,
@@ -154,8 +162,11 @@ func (r *Repository) GetByTokenHash(ctx context.Context, tokenHash string) (dto.
 			expires_at,
 			revoked
 		FROM auth_tokens
-		WHERE token_hash = $1 AND expires_at >= NOW() AND revoked = FALSE
+		WHERE token_hash = $1
 	`
+	if !withExpired {
+		query += ` AND expires_at >= NOW() AND revoked = FALSE`
+	}
 
 	row, err := db.Query(ctx, query, tokenHash)
 	if err != nil {

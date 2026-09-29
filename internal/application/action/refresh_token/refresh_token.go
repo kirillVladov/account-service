@@ -26,7 +26,7 @@ type TokenManager interface {
 type AccountTokensRepository interface {
 	DeactivateByUser(ctx context.Context, userID uuid.UUID, organizationID int64) error
 	CreateRefreshToken(ctx context.Context, userID uuid.UUID, organizationID int64, tokenHash string, expiresAt time.Time) error
-	GetTokenByUserID(ctx context.Context, userID uuid.UUID, organizationID int64) (dto.AccountToken, error)
+	GetByTokenHashWithExpired(ctx context.Context, tokenHash string) (dto.AccountToken, error)
 }
 
 type TxManager interface {
@@ -84,14 +84,18 @@ func (a *RefreshTokenAction) Refresh(ctx context.Context, oldToken, oldRefreshTo
 		return "", "", err
 	}
 
-	accountCreds, err := a.accountTokenRepository.GetTokenByUserID(ctx, account.ID, claims.OrganizationID)
+	hashedOldhRefreshToken := token_manager.Hash(oldRefreshToken)
+
+	accountCreds, err := a.accountTokenRepository.GetByTokenHashWithExpired(ctx, hashedOldhRefreshToken)
 	if err != nil {
 		return "", "", fmt.Errorf("get account creds: %w", err)
 	}
 
-	hashedOldhRefreshToken := token_manager.Hash(oldRefreshToken)
+	if accountCreds.Revoked || accountCreds.TokenType != dto.TokenTypeRefresh {
+		return "", "", errs.ErrForbidden
+	}
 
-	if accountCreds.Revoked || hashedOldhRefreshToken != accountCreds.TokenHash {
+	if accountCreds.UserID != account.ID || accountCreds.OrganizationID != claims.OrganizationID {
 		return "", "", errs.ErrForbidden
 	}
 
