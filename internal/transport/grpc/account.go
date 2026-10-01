@@ -13,6 +13,7 @@ import (
 	"github.com/kirillVladov/account-service/internal/application/dto/errs"
 	pb "github.com/kirillVladov/account-service/internal/gen/grpc"
 	"github.com/kirillVladov/account-service/pkg/token_manager"
+	"github.com/kirillVladov/account-service/pkg/validator"
 )
 
 type TokenManager interface {
@@ -76,12 +77,12 @@ func NewAccountHandlers(
 }
 
 func (h *AccountHandlers) CreateAccount(ctx context.Context, req *pb.CreateAccountRequest) (*pb.CreateAccountReply, error) {
-	if req.GetEmail() == "" {
-		return nil, status.Error(codes.InvalidArgument, "email is empty")
+	if err := validator.ValidateEmail(req.GetEmail()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
-	if req.GetPassword() == "" {
-		return nil, status.Error(codes.InvalidArgument, "password is empty")
+	if err := validator.ValidatePassword(req.GetPassword()); err != nil {
+		return nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	if req.GetOrganizationId() <= 0 {
